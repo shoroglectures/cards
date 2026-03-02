@@ -96,13 +96,12 @@
         .overflow-y-auto::-webkit-scrollbar-thumb:hover {
             background: #a0a0a0;
         }
-        .placeholder-message {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* فلتر عكس الألوان للصور المصغرة فقط */
+        .invert-thumbnail {
+            filter: invert(1);
+            width: 100%;
             height: 100%;
-            color: #666;
-            font-size: 1.2rem;
+            object-fit: contain;
         }
     </style>
 </head>
@@ -501,9 +500,9 @@
                     });
                 }
 
-                // رسم الاسم (يظهر مباشرة عند الكتابة)
+                // رسم الاسم بنفس حجم خط الرسالة (50px)
                 if (userChoices.name && userChoices.name.trim() !== '') {
-                    ctx.font = '700 80px "Cairo", sans-serif';
+                    ctx.font = '600 50px "Cairo", sans-serif';
                     ctx.fillStyle = '#ffffff';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
@@ -633,7 +632,7 @@
                 // لا نضيف selected لأول عنصر
             }
 
-            // تحميل المخطوطات (مع خلفية رمادية فاتحة لظهور الصور البيضاء)
+            // تحميل المخطوطات مع عكس الألوان للصورة المصغرة فقط
             function loadCalligraphy(occasionKey) {
                 const container = document.getElementById('calligraphy-container');
                 container.innerHTML = '';
@@ -644,16 +643,24 @@
                 }
                 imgs.forEach((src, index) => {
                     const div = document.createElement('div');
-                    // إضافة خلفية رمادية فاتحة وحدود داكنة لإظهار الصور البيضاء
-                    div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-32 bg-cover bg-center bg-gray-100 border border-gray-400 shadow-inner';
-                    div.style.backgroundImage = `url('${src}')`;
+                    div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-32 bg-white border border-gray-300 flex items-center justify-center';
+                    
+                    // استخدام عنصر img مع فلتر invert لجعل الخط يبدو غامقاً
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.className = 'invert-thumbnail'; // الفلتر من CSS
+                    img.alt = 'مخطوطة';
+                    
+                    div.appendChild(img);
                     div.dataset.src = src;
+                    
                     div.addEventListener('click', function() {
                         document.querySelectorAll('#calligraphy-container .option-card').forEach(el => el.classList.remove('selected'));
                         this.classList.add('selected');
                         userChoices.calligraphySrc = this.dataset.src;
                         drawCanvas();
                     });
+                    
                     container.appendChild(div);
                 });
                 // لا نضيف selected لأول عنصر
