@@ -559,7 +559,6 @@
                         alert('الرجاء اختيار مناسبة أولاً');
                         return;
                     }
-                    // لا نتحقق من وجود رسالة أو خلفية أو مخطوطة لأنها قد تكون غير مختارة بعد
                     goToStep(currentStep + 1);
                 }
             }
@@ -583,19 +582,16 @@
                     userChoices.occasionKey = occasionKey;
                     userChoices.occasionName = occasionName;
 
-                    // تحميل قوائم الخيارات للمناسبة المختارة (بدون تعيين قيم افتراضية)
+                    // تحميل قوائم الخيارات للمناسبة المختارة
                     loadMessages(occasionKey);
                     loadBackgrounds(occasionKey);
                     loadCalligraphy(occasionKey);
-
-                    // لا نعين أي قيم افتراضية، ونبقي userChoices.message, backgroundSrc, calligraphySrc كما هي (null)
-                    // لا نستدعي drawCanvas هنا لأننا لا نريد إظهار أي شيء حتى يختار المستخدم.
 
                     document.querySelector('#step-1 .next-btn').disabled = false;
                 });
             });
 
-            // تحميل الرسائل (بدون اختيار افتراضي)
+            // تحميل الرسائل
             function loadMessages(occasionKey) {
                 const container = document.getElementById('messages-container');
                 container.innerHTML = '';
@@ -609,14 +605,14 @@
                         this.classList.add('selected');
                         userChoices.message = msg;
                         document.getElementById('customMessage').value = msg;
-                        drawCanvas(); // تحديث المعاينة بعد اختيار الرسالة
+                        drawCanvas();
                     });
                     container.appendChild(div);
                 });
                 // لا نضيف selected لأول عنصر
             }
 
-            // تحميل الخلفيات (بدون اختيار افتراضي)
+            // تحميل الخلفيات
             function loadBackgrounds(occasionKey) {
                 const container = document.getElementById('backgrounds-container');
                 container.innerHTML = '';
@@ -630,14 +626,14 @@
                         document.querySelectorAll('#backgrounds-container .option-card').forEach(el => el.classList.remove('selected'));
                         this.classList.add('selected');
                         userChoices.backgroundSrc = this.dataset.src;
-                        drawCanvas(); // تحديث المعاينة بعد اختيار الخلفية
+                        drawCanvas();
                     });
                     container.appendChild(div);
                 });
                 // لا نضيف selected لأول عنصر
             }
 
-            // تحميل المخطوطات (بدون اختيار افتراضي)
+            // تحميل المخطوطات (مع خلفية رمادية فاتحة لظهور الصور البيضاء)
             function loadCalligraphy(occasionKey) {
                 const container = document.getElementById('calligraphy-container');
                 container.innerHTML = '';
@@ -648,14 +644,15 @@
                 }
                 imgs.forEach((src, index) => {
                     const div = document.createElement('div');
-                    div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-32 bg-cover bg-center';
+                    // إضافة خلفية رمادية فاتحة وحدود داكنة لإظهار الصور البيضاء
+                    div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-32 bg-cover bg-center bg-gray-100 border border-gray-400 shadow-inner';
                     div.style.backgroundImage = `url('${src}')`;
                     div.dataset.src = src;
                     div.addEventListener('click', function() {
                         document.querySelectorAll('#calligraphy-container .option-card').forEach(el => el.classList.remove('selected'));
                         this.classList.add('selected');
                         userChoices.calligraphySrc = this.dataset.src;
-                        drawCanvas(); // تحديث المعاينة بعد اختيار المخطوطة
+                        drawCanvas();
                     });
                     container.appendChild(div);
                 });
@@ -666,12 +663,12 @@
             document.getElementById('customMessage').addEventListener('input', function(e) {
                 userChoices.message = e.target.value;
                 document.querySelectorAll('#messages-container .option-card').forEach(el => el.classList.remove('selected'));
-                drawCanvas(); // تحديث المعاينة مع النص المخصص
+                drawCanvas();
             });
 
             document.getElementById('userName').addEventListener('input', function(e) {
                 userChoices.name = e.target.value;
-                drawCanvas(); // تحديث المعاينة مع الاسم
+                drawCanvas();
             });
 
             document.getElementById('formatSquare').addEventListener('click', () => setFormat('square'));
