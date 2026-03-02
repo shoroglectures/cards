@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>بطاقات التهنئة المفرحة</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- خط Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #fdf6e7 0%, #f8e8d9 100%);
+            min-height: 100vh;
+        }
+        .step-item {
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px);
+            border: 2px solid transparent;
+            font-size: 0.9rem;
+        }
+        @media (min-width: 640px) {
+            .step-item { font-size: 1rem; }
+        }
+        .step-item.active {
+            background: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.5);
+        }
+        .canvas-container {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 24px;
+            border: 4px solid white;
+            max-width: 100%;
+        }
+        .option-card {
+            transition: all 0.2s;
+            border: 3px solid transparent;
+            cursor: pointer;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .option-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+        .option-card.selected {
+            border-color: #f59e0b;
+            background: #fffbeb;
+            transform: scale(1.02);
+        }
+        .format-btn {
+            transition: all 0.2s;
+            border-width: 3px;
+            font-weight: 600;
+        }
+        .format-btn.active {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        .celebration-icon {
+            font-size: 1.5rem;
+            color: #f59e0b;
+            animation: bounce 2s infinite;
+        }
+        @media (min-width: 640px) {
+            .celebration-icon { font-size: 2rem; }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .bg-pattern {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><circle cx="10" cy="10" r="8" fill="%23f59e0b"/><circle cx="90" cy="30" r="12" fill="%234f46e5"/><circle cx="30" cy="80" r="10" fill="%2310b981"/></svg>');
+            background-size: 200px 200px;
+        }
+        .overflow-y-auto::-webkit-scrollbar {
+            width: 6px;
+        }
+        .overflow-y-auto::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+            background: #c7c7c7;
+            border-radius: 10px;
+        }
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+            background: #a0a0a0;
+        }
+        .placeholder-message {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #666;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body class="bg-pattern">
+
+    <!-- الهيدر -->
+    <header class="bg-white/90 backdrop-blur-sm shadow-lg py-4 sticky top-0 z-10">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center items-center gap-3 mb-1">
+                <i class="fas fa-star celebration-icon"></i>
+                <i class="fas fa-heart celebration-icon" style="animation-delay: 0.2s; color: #ec4899;"></i>
+                <i class="fas fa-moon celebration-icon" style="animation-delay: 0.4s; color: #4f46e5;"></i>
+            </div>
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+                ✨ صمم بطاقة تهنئتك المفرحة ✨
+            </h1>
+            <p class="text-gray-600 mt-1 text-sm sm:text-base">اختر المناسبة، أضف لمساتك، وشارك الأحبة</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-6 max-w-7xl">
+        <!-- مؤشر الخطوات -->
+        <div class="flex flex-wrap justify-center gap-2 mb-6">
+            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="1">
+                <i class="fas fa-calendar-alt text-xs sm:text-sm"></i> <span class="text-xs sm:text-sm">١. المناسبة</span>
+            </div>
+            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="2">
+                <i class="fas fa-pen text-xs sm:text-sm"></i> <span class="text-xs sm:text-sm">٢. الرسالة</span>
+            </div>
+            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="3">
+                <i class="fas fa-image text-xs sm:text-sm"></i> <span class="text-xs sm:text-sm">٣. الخلفية</span>
+            </div>
+            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="4">
+                <i class="fas fa-paint-brush text-xs sm:text-sm"></i> <span class="text-xs sm:text-sm">٤. المخطوطة</span>
+            </div>
+            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="5">
+                <i class="fas fa-signature text-xs sm:text-sm"></i> <span class="text-xs sm:text-sm">٥. الاسم</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- الجزء الأيمن: خطوات التفاعل -->
+            <div class="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-2xl border-4 border-white">
+                <!-- الخطوة 1: المناسبة -->
+                <div id="step-1" class="step-content block">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-3 text-indigo-700">
+                        <span class="bg-indigo-100 w-8 h-8 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center text-indigo-700 text-sm sm:text-base">١</span>
+                        اختر المناسبة
+                    </h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="عيد الفطر" data-occasion-key="eid-fitr">
+                            <span class="text-3xl sm:text-5xl">🍬</span>
+                            <h3 class="font-bold mt-2 text-sm sm:text-lg">عيد الفطر</h3>
+                            <p class="text-gray-500 text-xs sm:text-sm">بطاقات حلوة</p>
+                        </div>
+                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="عيد الأضحى" data-occasion-key="eid-adha">
+                            <span class="text-3xl sm:text-5xl">🐑</span>
+                            <h3 class="font-bold mt-2 text-sm sm:text-lg">عيد الأضحى</h3>
+                            <p class="text-gray-500 text-xs sm:text-sm">أجواء مباركة</p>
+                        </div>
+                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="رمضان" data-occasion-key="ramadan">
+                            <span class="text-3xl sm:text-5xl">🌙</span>
+                            <h3 class="font-bold mt-2 text-sm sm:text-lg">رمضان</h3>
+                            <p class="text-gray-500 text-xs sm:text-sm">شهر الخير</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 sm:mt-8 flex justify-end">
+                        <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold text-sm sm:text-lg" disabled>
+                            التالي <i class="fas fa-arrow-left mr-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- الخطوة 2: رسالة التهنئة -->
+                <div id="step-2" class="step-content hidden">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-3 text-indigo-700">
+                        <span class="bg-indigo-100 w-8 h-8 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center">٢</span>
+                        اختر رسالة التهنئة
+                    </h2>
+                    <div id="messages-container" class="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto p-1"></div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium mb-2 text-gray-700">أو اكتب رسالة خاصة:</label>
+                        <textarea id="customMessage" rows="3" class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all text-sm" placeholder="اكتب رسالتك هنا..."></textarea>
+                    </div>
+                    <div class="mt-6 flex justify-between">
+                        <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 transition-all font-bold text-sm"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
+                        <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:shadow-lg font-bold text-sm">التالي <i class="fas fa-arrow-left mr-2"></i></button>
+                    </div>
+                </div>
+
+                <!-- الخطوة 3: الخلفية -->
+                <div id="step-3" class="step-content hidden">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-3 text-indigo-700">
+                        <span class="bg-indigo-100 w-8 h-8 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center">٣</span>
+                        اختر الخلفية
+                    </h2>
+                    <div id="backgrounds-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto p-1"></div>
+                    <div class="mt-6 flex justify-between">
+                        <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 font-bold text-sm"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
+                        <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:shadow-lg font-bold text-sm">التالي <i class="fas fa-arrow-left mr-2"></i></button>
+                    </div>
+                </div>
+
+                <!-- الخطوة 4: المخطوطة -->
+                <div id="step-4" class="step-content hidden">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-3 text-indigo-700">
+                        <span class="bg-indigo-100 w-8 h-8 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center">٤</span>
+                        اختر المخطوطة
+                    </h2>
+                    <p class="text-xs sm:text-sm text-gray-500 mb-4">اختر صورة تحتوي على عبارة مكتوبة بخط جميل</p>
+                    <div id="calligraphy-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto p-1"></div>
+                    <div class="mt-6 flex justify-between">
+                        <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 font-bold text-sm"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
+                        <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:shadow-lg font-bold text-sm">التالي <i class="fas fa-arrow-left mr-2"></i></button>
+                    </div>
+                </div>
+
+                <!-- الخطوة 5: الاسم والتحميل -->
+                <div id="step-5" class="step-content hidden">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-3 text-indigo-700">
+                        <span class="bg-indigo-100 w-8 h-8 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center">٥</span>
+                        اكتب اسمك
+                    </h2>
+                    <input type="text" id="userName" placeholder="الاسم الذي يظهر أسفل البطاقة" class="w-full border-2 border-gray-200 rounded-xl p-3 sm:p-4 text-base focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all">
+                    <p class="text-xs sm:text-sm text-gray-500 mt-2">اختياري - يمكنك تركه فارغاً</p>
+                    
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium mb-3 text-gray-700">شكل البطاقة:</label>
+                        <div class="flex gap-3">
+                            <button id="formatSquare" class="format-btn flex-1 border-3 border-indigo-600 text-indigo-600 font-bold py-2 sm:py-3 px-3 rounded-xl hover:bg-indigo-50 transition-all active flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                                <i class="fas fa-square"></i> مربع
+                            </button>
+                            <button id="formatPortrait" class="format-btn flex-1 border-3 border-gray-300 text-gray-700 font-bold py-2 sm:py-3 px-3 rounded-xl hover:bg-gray-50 transition-all flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                                <i class="fas fa-portrait"></i> طولي
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-between items-center">
+                        <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 font-bold text-sm"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
+                        <button onclick="downloadCard()" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-2 sm:py-3 px-4 sm:px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-2 text-sm sm:text-lg">
+                            <i class="fas fa-download"></i> تحميل
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الجزء الأيسر: المعاينة -->
+            <div class="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-2xl border-4 border-white flex flex-col items-center">
+                <h2 class="text-xl sm:text-2xl font-bold mb-3 text-indigo-700 flex items-center gap-2">
+                    <i class="fas fa-eye"></i> المعاينة
+                </h2>
+                <div class="canvas-container w-full max-w-[350px] sm:max-w-[400px] mx-auto overflow-hidden">
+                    <canvas id="cardCanvas" width="1000" height="1000" class="w-full h-auto"></canvas>
+                </div>
+                <p class="text-gray-500 mt-3 text-xs sm:text-sm flex items-center gap-2">
+                    <i class="fas fa-sync-alt text-indigo-500"></i> التغييرات تظهر مباشرة
+                </p>
+                <div id="imageError" class="text-red-500 text-xs mt-2 hidden">خطأ في تحميل بعض الصور. تأكدي من المسارات.</div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-4 text-gray-600 text-xs sm:text-sm">
+        <p>© 2026 – بطاقات تهنئة مفرحة | جميع التصاميم متاحة للاستخدام الشخصي</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        (function() {
+            // ---------- بيانات الموقع ----------
+            const messagesData = {
+                'eid-fitr': [
+                    'كل عام وأنتم بخير',
+                    'تقبل الله طاعتكم',
+                    'عيد فطر سعيد',
+                    'أعاد الله عليكم بالخير والبركات',
+                    'كل سنة وأنتم طيبون',
+                    'عساكم من عواده',
+                    'من القلب نبعث التهاني',
+                    'بكل حب وأماني'
+                ],
+                'eid-adha': [
+                    'تقبل الله منا ومنكم',
+                    'كل عام وأنتم بخير',
+                    'عيد أضحى مبارك',
+                    'حج مبرور وذنب مغفور',
+                    'أيام تشريق سعيدة',
+                    'كل عام وأنتم إلى الله أقرب'
+                ],
+                'ramadan': [
+                    'رمضان كريم',
+                    'كل عام وأنتم بخير',
+                    'شهر الخير والبركات',
+                    'أسأل الله أن يبلغنا رمضان',
+                    'رمضان شهر القرآن',
+                    'غفر الله لنا ولكم'
+                ]
+            };
+
+            // مسارات الصور
+            const backgroundData = {
+                'eid-fitr': [
+                    'images/backgrounds/eid-fitr-bg1.png',
+                    'images/backgrounds/eid-fitr-bg2.png',
+                    'images/backgrounds/eid-fitr-bg3.png',
+                ],
+                'eid-adha': [
+                    'images/backgrounds/eid-adha-bg1.png',
+                    'images/backgrounds/eid-adha-bg2.png',
+                ],
+                'ramadan': [
+                    'images/backgrounds/ramadan-bg1.png',
+                    'images/backgrounds/ramadan-bg2.png',
+                ]
+            };
+
+            const calligraphyData = {
+                'eid-fitr': [
+                    'images/calligraphy/eid-fitr-call1.png',
+                    'images/calligraphy/eid-fitr-call2.png',
+                ],
+                'eid-adha': [
+                    'images/calligraphy/eid-adha-call1.png',
+                ],
+                'ramadan': [
+                    'images/calligraphy/ramadan-call1.png',
+                ]
+            };
+
+            // حالة المستخدم - جميع القيم فارغة بداية
+            let userChoices = {
+                occasionKey: null,
+                occasionName: null,
+                message: null,
+                backgroundSrc: null,
+                calligraphySrc: null,
+                name: '',
+                format: 'square'
+            };
+
+            const canvas = document.getElementById('cardCanvas');
+            let ctx = canvas.getContext('2d');
+            const errorDiv = document.getElementById('imageError');
+
+            // رسم أولي: رسالة ترحيبية
+            function drawEmptyCanvas() {
+                let width, height;
+                if (userChoices.format === 'square') {
+                    width = 1000;
+                    height = 1000;
+                } else {
+                    width = 800;
+                    height = 1200;
+                }
+                canvas.width = width;
+                canvas.height = height;
+                ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#f8e8d9';
+                ctx.fillRect(0, 0, width, height);
+                ctx.font = '40px "Cairo", sans-serif';
+                ctx.fillStyle = '#888';
+                ctx.textAlign = 'center';
+                ctx.fillText('✨ اختر المناسبة أولاً ✨', width/2, height/2);
+            }
+            drawEmptyCanvas();
+
+            let bgImage = new Image();
+            let calligraphyImage = new Image();
+            let imagesToLoad = 0;
+            let loadedImages = 0;
+
+            function resetImageLoad() {
+                loadedImages = 0;
+                imagesToLoad = 0;
+                errorDiv.classList.add('hidden');
+            }
+
+            function drawCanvas() {
+                // إذا لم يتم اختيار مناسبة بعد، نعرض رسالة ترحيبية
+                if (!userChoices.occasionKey) {
+                    drawEmptyCanvas();
+                    return;
+                }
+
+                resetImageLoad();
+                let width, height;
+                if (userChoices.format === 'square') {
+                    width = 1000;
+                    height = 1000;
+                } else {
+                    width = 800;
+                    height = 1200;
+                }
+                canvas.width = width;
+                canvas.height = height;
+                ctx.clearRect(0, 0, width, height);
+
+                // رسم الخلفية فقط إذا تم اختيارها
+                if (userChoices.backgroundSrc) {
+                    imagesToLoad++;
+                    bgImage.src = userChoices.backgroundSrc;
+                } else {
+                    // إذا لم تختار خلفية، نستخدم لون خلفية فاتح
+                    ctx.fillStyle = '#ffd7be';
+                    ctx.fillRect(0, 0, width, height);
+                    proceedToNextLayer();
+                }
+            }
+
+            bgImage.onload = function() {
+                ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+                loadedImages++;
+                if (loadedImages === imagesToLoad) {
+                    proceedToNextLayer();
+                }
+            };
+            bgImage.onerror = function() {
+                console.error('فشل تحميل الخلفية:', userChoices.backgroundSrc);
+                ctx.fillStyle = '#ffd7be';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                loadedImages++;
+                errorDiv.classList.remove('hidden');
+                if (loadedImages === imagesToLoad) {
+                    proceedToNextLayer();
+                }
+            };
+
+            function proceedToNextLayer() {
+                // رسم المخطوطة فقط إذا تم اختيارها
+                if (userChoices.calligraphySrc) {
+                    imagesToLoad++;
+                    calligraphyImage.src = userChoices.calligraphySrc;
+                } else {
+                    drawTexts(null);
+                }
+            }
+
+            calligraphyImage.onload = function() {
+                let width = canvas.width;
+                let height = canvas.height;
+                const maxWidth = width * 0.8;
+                const maxHeight = height * 0.5;
+                let imgWidth = calligraphyImage.width;
+                let imgHeight = calligraphyImage.height;
+                const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight, 1);
+                const drawWidth = imgWidth * ratio;
+                const drawHeight = imgHeight * ratio;
+                const drawX = (width - drawWidth) / 2;
+                const drawY = (height - drawHeight) / 2 - 50;
+                ctx.drawImage(calligraphyImage, drawX, drawY, drawWidth, drawHeight);
+                loadedImages++;
+                if (loadedImages === imagesToLoad) {
+                    drawTexts(drawY + drawHeight);
+                }
+            };
+            calligraphyImage.onerror = function() {
+                console.error('فشل تحميل المخطوطة:', userChoices.calligraphySrc);
+                errorDiv.classList.remove('hidden');
+                loadedImages++;
+                if (loadedImages === imagesToLoad) {
+                    drawTexts(null);
+                }
+            };
+
+            function drawTexts(calligraphyBottomY) {
+                let width = canvas.width;
+                let height = canvas.height;
+                const hasCalligraphy = calligraphyBottomY !== null;
+
+                // رسم رسالة التهنئة فقط إذا تم اختيارها
+                if (userChoices.message && userChoices.message.trim() !== '') {
+                    ctx.font = '600 50px "Cairo", sans-serif';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                    ctx.shadowBlur = 10;
+                    ctx.shadowOffsetX = 3;
+                    ctx.shadowOffsetY = 3;
+
+                    const lines = userChoices.message.split('\n');
+                    const lineHeight = 70;
+                    let startY;
+                    if (hasCalligraphy) {
+                        startY = calligraphyBottomY + 70;
+                        if (userChoices.name) {
+                            startY = Math.min(startY, height - 200 - lines.length * lineHeight);
+                        }
+                    } else {
+                        startY = height / 2 - ((lines.length - 1) * lineHeight / 2);
+                    }
+
+                    lines.forEach((line, index) => {
+                        ctx.fillText(line, width / 2, startY + (index * lineHeight));
+                    });
+                }
+
+                // رسم الاسم (يظهر مباشرة عند الكتابة)
+                if (userChoices.name && userChoices.name.trim() !== '') {
+                    ctx.font = '700 80px "Cairo", sans-serif';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                    ctx.shadowBlur = 10;
+                    ctx.shadowOffsetX = 3;
+                    ctx.shadowOffsetY = 3;
+                    ctx.fillText(userChoices.name, width / 2, height - 120);
+                }
+
+                ctx.shadowBlur = 0;
+            }
+
+            window.downloadCard = function() {
+                if (!userChoices.occasionKey) {
+                    alert('الرجاء اختيار مناسبة أولاً');
+                    return;
+                }
+                const dataURL = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `بطاقة_${userChoices.occasionName}_${userChoices.format}.png`;
+                link.href = dataURL;
+                link.click();
+            };
+
+            function setFormat(format) {
+                userChoices.format = format;
+                document.getElementById('formatSquare').classList.toggle('active', format === 'square');
+                document.getElementById('formatPortrait').classList.toggle('active', format === 'portrait');
+                drawCanvas();
+            }
+
+            // إدارة الخطوات
+            let currentStep = 1;
+            const stepContents = document.querySelectorAll('.step-content');
+            const stepIndicators = document.querySelectorAll('.step-item');
+            const nextButtons = document.querySelectorAll('.next-btn');
+            const prevButtons = document.querySelectorAll('.prev-btn');
+
+            function goToStep(step) {
+                stepContents.forEach(content => content.classList.add('hidden'));
+                document.getElementById(`step-${step}`).classList.remove('hidden');
+                stepIndicators.forEach((ind, idx) => {
+                    if (idx+1 === step) ind.classList.add('active');
+                    else ind.classList.remove('active');
+                });
+                currentStep = step;
+            }
+
+            function nextStep() {
+                if (currentStep < 5) {
+                    if (currentStep === 1 && !userChoices.occasionKey) {
+                        alert('الرجاء اختيار مناسبة أولاً');
+                        return;
+                    }
+                    // لا نتحقق من وجود رسالة أو خلفية أو مخطوطة لأنها قد تكون غير مختارة بعد
+                    goToStep(currentStep + 1);
+                }
+            }
+
+            function prevStep() {
+                if (currentStep > 1) goToStep(currentStep - 1);
+            }
+
+            nextButtons.forEach(btn => btn.addEventListener('click', nextStep));
+            prevButtons.forEach(btn => btn.addEventListener('click', prevStep));
+
+            // أحداث المناسبة
+            const occasionOptions = document.querySelectorAll('[data-occasion]');
+            occasionOptions.forEach(opt => {
+                opt.addEventListener('click', function() {
+                    occasionOptions.forEach(o => o.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    const occasionKey = this.dataset.occasionKey;
+                    const occasionName = this.dataset.occasion;
+                    userChoices.occasionKey = occasionKey;
+                    userChoices.occasionName = occasionName;
+
+                    // تحميل قوائم الخيارات للمناسبة المختارة (بدون تعيين قيم افتراضية)
+                    loadMessages(occasionKey);
+                    loadBackgrounds(occasionKey);
+                    loadCalligraphy(occasionKey);
+
+                    // لا نعين أي قيم افتراضية، ونبقي userChoices.message, backgroundSrc, calligraphySrc كما هي (null)
+                    // لا نستدعي drawCanvas هنا لأننا لا نريد إظهار أي شيء حتى يختار المستخدم.
+
+                    document.querySelector('#step-1 .next-btn').disabled = false;
+                });
+            });
+
+            // تحميل الرسائل (بدون اختيار افتراضي)
+            function loadMessages(occasionKey) {
+                const container = document.getElementById('messages-container');
+                container.innerHTML = '';
+                const msgs = messagesData[occasionKey] || [];
+                msgs.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = 'option-card p-3 cursor-pointer text-center font-semibold text-sm sm:text-base';
+                    div.textContent = msg;
+                    div.addEventListener('click', function() {
+                        document.querySelectorAll('#messages-container .option-card').forEach(el => el.classList.remove('selected'));
+                        this.classList.add('selected');
+                        userChoices.message = msg;
+                        document.getElementById('customMessage').value = msg;
+                        drawCanvas(); // تحديث المعاينة بعد اختيار الرسالة
+                    });
+                    container.appendChild(div);
+                });
+                // لا نضيف selected لأول عنصر
+            }
+
+            // تحميل الخلفيات (بدون اختيار افتراضي)
+            function loadBackgrounds(occasionKey) {
+                const container = document.getElementById('backgrounds-container');
+                container.innerHTML = '';
+                const imgs = backgroundData[occasionKey] || [];
+                imgs.forEach((src, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'option-card overflow-hidden cursor-pointer h-20 sm:h-24 bg-cover bg-center';
+                    div.style.backgroundImage = `url('${src}')`;
+                    div.dataset.src = src;
+                    div.addEventListener('click', function() {
+                        document.querySelectorAll('#backgrounds-container .option-card').forEach(el => el.classList.remove('selected'));
+                        this.classList.add('selected');
+                        userChoices.backgroundSrc = this.dataset.src;
+                        drawCanvas(); // تحديث المعاينة بعد اختيار الخلفية
+                    });
+                    container.appendChild(div);
+                });
+                // لا نضيف selected لأول عنصر
+            }
+
+            // تحميل المخطوطات (بدون اختيار افتراضي)
+            function loadCalligraphy(occasionKey) {
+                const container = document.getElementById('calligraphy-container');
+                container.innerHTML = '';
+                const imgs = calligraphyData[occasionKey] || [];
+                if (imgs.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-sm">لا توجد مخطوطات متاحة لهذه المناسبة حالياً</p>';
+                    return;
+                }
+                imgs.forEach((src, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-32 bg-cover bg-center';
+                    div.style.backgroundImage = `url('${src}')`;
+                    div.dataset.src = src;
+                    div.addEventListener('click', function() {
+                        document.querySelectorAll('#calligraphy-container .option-card').forEach(el => el.classList.remove('selected'));
+                        this.classList.add('selected');
+                        userChoices.calligraphySrc = this.dataset.src;
+                        drawCanvas(); // تحديث المعاينة بعد اختيار المخطوطة
+                    });
+                    container.appendChild(div);
+                });
+                // لا نضيف selected لأول عنصر
+            }
+
+            // استماع للتغييرات
+            document.getElementById('customMessage').addEventListener('input', function(e) {
+                userChoices.message = e.target.value;
+                document.querySelectorAll('#messages-container .option-card').forEach(el => el.classList.remove('selected'));
+                drawCanvas(); // تحديث المعاينة مع النص المخصص
+            });
+
+            document.getElementById('userName').addEventListener('input', function(e) {
+                userChoices.name = e.target.value;
+                drawCanvas(); // تحديث المعاينة مع الاسم
+            });
+
+            document.getElementById('formatSquare').addEventListener('click', () => setFormat('square'));
+            document.getElementById('formatPortrait').addEventListener('click', () => setFormat('portrait'));
+
+            // لا يوجد اختيار افتراضي، المعاينة فارغة مع رسالة ترحيبية
+        })();
+    </script>
+</body>
+</html>
