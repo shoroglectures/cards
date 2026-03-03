@@ -282,7 +282,7 @@
                         <span class="bg-indigo-100 w-8 h-8 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center">٤</span>
                         اختر المخطوطة
                     </h2>
-                    <p class="text-xs sm:text-sm text-gray-500 mb-4">اختر صورة تحتوي على عبارة مكتوبة بخط جميل</p>
+                    <p class="text-xs sm:text-sm text-gray-500 mb-4">اختر صورة تحتوي على عبارة مكتوبة بخط جميل (يفضل PNG بخلفية شفافة)</p>
                     <div id="calligraphy-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-60 overflow-y-auto p-1"></div>
                     
                     <!-- اختيار لون المخطوطة -->
@@ -447,18 +447,18 @@
                 'I': ['I1.png']                    // مخصص
             };
 
-            // حالة المستخدم - مع إضافة خيارات الخط واللون ولون المخطوطة
+            // حالة المستخدم
             let userChoices = {
-                occasionKey: null,          // حرف المناسبة (A, B, C...)
+                occasionKey: null,
                 occasionName: null,
                 message: null,
                 backgroundSrc: null,
                 calligraphySrc: null,
                 name: '',
                 format: 'square',
-                fontFamily: 'Cairo',        // الخط الافتراضي
-                fontColor: '#ffffff',        // لون النص
-                calligraphyColor: '#ffffff'  // لون المخطوطة
+                fontFamily: 'Cairo',
+                fontColor: '#ffffff',
+                calligraphyColor: '#ffffff'
             };
 
             const canvas = document.getElementById('cardCanvas');
@@ -555,32 +555,68 @@
                 }
             }
 
-            calligraphyImage.onload = function() {
+            // دالة لتلوين المخطوطة مع إزالة الخلفية البيضاء
+            function drawTintedCalligraphy(img, color) {
                 let width = canvas.width;
                 let height = canvas.height;
+
+                // إنشاء canvas مؤقت بنفس أبعاد الصورة الأصلية
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = img.width;
+                tempCanvas.height = img.height;
+                const tempCtx = tempCanvas.getContext('2d');
+
+                // رسم الصورة على canvas المؤقت
+                tempCtx.drawImage(img, 0, 0);
+
+                // الحصول على بيانات الصورة
+                const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
+                const data = imageData.data;
+
+                // تحويل الأبيض إلى شفاف وتطبيق اللون الجديد
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i+1];
+                    const b = data[i+2];
+                    const a = data[i+3];
+
+                    // إذا كان البكسل أبيض تقريباً (خلفية) والخلفية غير شفافة، نجعله شفافاً
+                    if (r > 240 && g > 240 && b > 240 && a > 0) {
+                        data[i+3] = 0; // شفاف
+                    } else if (a > 0) {
+                        // بالنسبة للبكسلات غير الشفافة (الخط)، نلونها باللون الجديد
+                        // نحافظ على قيمة الشفافية الأصلية
+                        data[i] = (parseInt(color.slice(1,3), 16) * a) / 255; // دمج مع الشفافية
+                        data[i+1] = (parseInt(color.slice(3,5), 16) * a) / 255;
+                        data[i+2] = (parseInt(color.slice(5,7), 16) * a) / 255;
+                        // لا نغير ألفا
+                    }
+                }
+
+                // وضع البيانات المعدلة في canvas المؤقت
+                tempCtx.putImageData(imageData, 0, 0);
+
+                // الآن رسم الصورة المعدلة على canvas الرئيسي
                 const maxWidth = width * 0.8;
                 const maxHeight = height * 0.5;
-                let imgWidth = calligraphyImage.width;
-                let imgHeight = calligraphyImage.height;
+                let imgWidth = img.width;
+                let imgHeight = img.height;
                 const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight, 1);
                 const drawWidth = imgWidth * ratio;
                 const drawHeight = imgHeight * ratio;
                 const drawX = (width - drawWidth) / 2;
                 const drawY = (height - drawHeight) / 2 - 50;
 
-                // رسم المخطوطة أولاً
-                ctx.drawImage(calligraphyImage, drawX, drawY, drawWidth, drawHeight);
+                ctx.drawImage(tempCanvas, 0, 0, img.width, img.height, drawX, drawY, drawWidth, drawHeight);
 
-                // تطبيق لون المخطوطة المختار باستخدام composite operation
-                ctx.save();
-                ctx.globalCompositeOperation = 'source-in';
-                ctx.fillStyle = userChoices.calligraphyColor;
-                ctx.fillRect(drawX, drawY, drawWidth, drawHeight);
-                ctx.restore();
+                return drawY + drawHeight;
+            }
 
+            calligraphyImage.onload = function() {
+                const bottomY = drawTintedCalligraphy(calligraphyImage, userChoices.calligraphyColor);
                 loadedImages++;
                 if (loadedImages === imagesToLoad) {
-                    drawTexts(drawY + drawHeight);
+                    drawTexts(bottomY);
                 }
             };
             calligraphyImage.onerror = function() {
