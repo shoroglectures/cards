@@ -663,8 +663,11 @@
 
                 // حساب قطر البطاقة
                 const diagonal = Math.hypot(width, height);
-                // حجم الخط: 4% من القطر (حوالي 40-57 بكسل)
+                // حجم الخط الأساسي للرسالة: 4% من القطر
                 const baseFontSize = Math.round(diagonal * 0.04);
+                // حجم الاسم: 80% من حجم الخط الأساسي
+                const nameFontSize = Math.round(baseFontSize * 0.8);
+                
                 ctx.shadowColor = 'rgba(0,0,0,0.5)';
                 ctx.shadowBlur = 10;
                 ctx.shadowOffsetX = 3;
@@ -700,7 +703,7 @@
 
                 // رسم الاسم - إذا كان موجوداً
                 if (userChoices.name && userChoices.name.trim() !== '') {
-                    ctx.font = `600 ${baseFontSize}px "${userChoices.fontFamily}", "Cairo", sans-serif`;
+                    ctx.font = `600 ${nameFontSize}px "${userChoices.fontFamily}", "Cairo", sans-serif`;
                     ctx.fillStyle = userChoices.fontColor;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
@@ -708,11 +711,12 @@
                     let nameY;
                     if (hasCalligraphy) {
                         if (lastY !== null) {
-                            // هناك رسالة، نضع الاسم تحت آخر سطر بمسافة (نصف ارتفاع سطر)
-                            nameY = lastY + baseFontSize * 0.8;
+                            // هناك رسالة، نضع الاسم تحت آخر سطر بمسافة سطرين (2.8 * baseFontSize تقريباً)
+                            // بما أن الاسم بحجم أصغر، نضبط المسافة لتبدو متناسبة
+                            nameY = lastY + baseFontSize * 2.8;
                         } else {
                             // لا توجد رسالة، نضع الاسم تحت المخطوطة مباشرة بمسافة بسيطة
-                            nameY = calligraphyBottomY + baseFontSize * 1.2;
+                            nameY = calligraphyBottomY + baseFontSize * 2.0;
                         }
                     } else {
                         // لا مخطوطة، نضع الاسم في الأسفل (12% من القطر من الأسفل)
