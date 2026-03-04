@@ -664,6 +664,8 @@
                 ctx.shadowOffsetX = 3;
                 ctx.shadowOffsetY = 3;
 
+                let lastY = null; // لتتبع آخر موضع للنص
+
                 // رسم رسالة التهنئة
                 if (userChoices.message && userChoices.message.trim() !== '') {
                     ctx.font = `600 ${baseFontSize}px "${userChoices.fontFamily}", "Cairo", sans-serif`;
@@ -672,45 +674,44 @@
                     ctx.textBaseline = 'middle';
 
                     const lines = userChoices.message.split('\n');
-                    const lineHeight = baseFontSize * 1.4; // مسافة بين الأسطر
+                    const lineHeight = baseFontSize * 1.4;
                     let startY;
 
                     if (hasCalligraphy) {
-                        // بداية النص بعد المخطوطة بمسافة نصف حجم الخط (بدلاً من نسبة مئوية)
+                        // بداية النص بعد المخطوطة بمسافة نصف حجم الخط
                         startY = calligraphyBottomY + baseFontSize * 0.5;
-                        // التأكد من أن النص لا يتجاوز مساحة الاسم
-                        if (userChoices.name) {
-                            const maxY = height - (baseFontSize * 2) - (lines.length * lineHeight);
-                            startY = Math.min(startY, maxY);
-                        }
                     } else {
                         // إذا لم توجد مخطوطة، نضع النص في الثلث العلوي
                         startY = height * 0.3;
                     }
 
                     lines.forEach((line, index) => {
-                        ctx.fillText(line, width / 2, startY + (index * lineHeight));
+                        const y = startY + (index * lineHeight);
+                        ctx.fillText(line, width / 2, y);
+                        lastY = y + lineHeight / 2; // نهاية هذا السطر تقريباً
                     });
-
-                    // إذا كان هناك اسم، نضمن أن الاسم لا يتداخل مع النص
-                    if (userChoices.name && userChoices.name.trim() !== '') {
-                        const lastLineY = startY + (lines.length - 1) * lineHeight;
-                        const nameY = height - Math.min(180, height * 0.18);
-                        // إذا كان الاسم قريباً جداً من النص، ندفع النص للأعلى قليلاً
-                        if (lastLineY + lineHeight > nameY - baseFontSize) {
-                            // إعادة الرسم مع رفع النص للأعلى
-                            // يمكن تنفيذ ذلك بإعادة الحساب، لكننا نكتفي بهذا
-                        }
-                    }
                 }
 
-                // رسم الاسم
+                // رسم الاسم - إذا كان موجوداً
                 if (userChoices.name && userChoices.name.trim() !== '') {
                     ctx.font = `600 ${baseFontSize}px "${userChoices.fontFamily}", "Cairo", sans-serif`;
                     ctx.fillStyle = userChoices.fontColor;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    const nameY = height - Math.min(180, height * 0.18);
+
+                    let nameY;
+                    if (hasCalligraphy) {
+                        if (lastY !== null) {
+                            // هناك رسالة، نضع الاسم تحت آخر سطر بمسافة (نصف ارتفاع سطر)
+                            nameY = lastY + baseFontSize * 0.8;
+                        } else {
+                            // لا توجد رسالة، نضع الاسم تحت المخطوطة مباشرة بمسافة بسيطة
+                            nameY = calligraphyBottomY + baseFontSize * 1.2;
+                        }
+                    } else {
+                        // لا مخطوطة، نضع الاسم في الأسفل كما كان
+                        nameY = height - Math.min(180, height * 0.18);
+                    }
                     ctx.fillText(userChoices.name, width / 2, nameY);
                 }
 
