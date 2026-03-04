@@ -348,7 +348,7 @@
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
         (function() {
-            // ---------- بيانات الموقع حسب الترميز الجديد (حرف لكل مناسبة) ----------
+            // ---------- بيانات الموقع ----------
             const messagesData = {
                 'A': [ // عيد الفطر
                     'كل عام وأنتم بخير',
@@ -419,14 +419,21 @@
                 ]
             };
 
-            // قائمة الخلفيات لكل مناسبة - سنقوم بإنشاء المصفوفات بناءً على عدد الصور المتوفرة
-            // يمكنك تعديل الأرقام حسب عدد الصور الموجودة فعلياً في كل مجلد
-            const backgroundData = {
-                'A': [], 'B': [], 'C': [], 'D': [], 'E': [], 'F': [], 'G': [], 'H': [], 'I': []
+            // قوائم الخلفيات لكل مناسبة (أسماء الملفات فقط)
+            const backgroundFileLists = {
+                'A': ['A1.png', 'A2.png', 'A3.png'],      // عيد الفطر
+                'B': ['B1.png', 'B2.png'],                // عيد الأضحى
+                'C': ['C1.png', 'C2.png', 'C3.png'],      // رمضان
+                'D': ['D1.png', 'D2.png', 'D3.png'],      // زواج
+                'E': ['E1.png', 'E2.png'],                // مولود
+                'F': ['F1.png', 'F2.png', 'F3.png'],      // نجاح/تخرج
+                'G': ['G1.png', 'G2.png'],                // عيد ميلاد
+                'H': ['H1.png', 'H2.png', 'H3.png'],      // العام الجديد
+                'I': ['I1.png', 'I2.png']                  // مخصص
             };
 
-            // قائمة المخطوطات لكل مناسبة - يجب تعديل الأسماء حسب ملفاتك
-            const calligraphyData = {
+            // قوائم المخطوطات لكل مناسبة
+            const calligraphyFileLists = {
                 'A': ['A1.png', 'A2.png'],      // عيد الفطر
                 'B': ['B1.png'],                 // عيد الأضحى
                 'C': ['C1.png', 'C2.png'],       // رمضان
@@ -437,16 +444,6 @@
                 'H': ['H1.png', 'H2.png'],        // العام الجديد
                 'I': ['I1.png']                    // مخصص
             };
-
-            // محاولة إنشاء أسماء ملفات الخلفيات للأرقام من 1 إلى 94 (يمكنك تقليل العدد)
-            for (let i = 1; i <= 94; i++) {
-                let num = i.toString().padStart(2, '0');
-                let filename = num + '.jpg'; // افترض أن الصيغة JPG
-                // أضف نفس الملف لجميع المناسبات (يمكنك تخصيصها لاحقاً)
-                for (let key in backgroundData) {
-                    backgroundData[key].push(filename);
-                }
-            }
 
             // حالة المستخدم
             let userChoices = {
@@ -715,7 +712,6 @@
                 }
                 if (isDrawing) {
                     pendingDownload = true;
-                    // سيتم التحميل بعد انتهاء الرسم
                 } else {
                     performDownload();
                 }
@@ -769,7 +765,7 @@
                     occasionOptions.forEach(o => o.classList.remove('selected'));
                     this.classList.add('selected');
                     
-                    const occasionKey = this.dataset.occasionKey; // الحرف
+                    const occasionKey = this.dataset.occasionKey;
                     const occasionName = this.dataset.occasion;
                     userChoices.occasionKey = occasionKey;
                     userChoices.occasionName = occasionName;
@@ -807,21 +803,26 @@
             function loadBackgrounds(occasionKey) {
                 const container = document.getElementById('backgrounds-container');
                 container.innerHTML = '';
-                const filenames = backgroundData[occasionKey] || [];
-                filenames.forEach((filename) => {
-                    // بناء المسار: images/مناسبة/backgrounds/الملف
-                    const url = `images/${occasionKey}/backgrounds/${filename}`;
+                const files = backgroundFileLists[occasionKey] || [];
+                files.forEach(filename => {
+                    // بناء المسار: images/[occasionKey]/backgrounds/[filename]
+                    const src = `images/${occasionKey}/backgrounds/${filename}`;
                     const div = document.createElement('div');
                     div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-28 flex items-center justify-center p-1';
                     
                     const img = document.createElement('img');
-                    img.src = url;
+                    img.src = src;
                     img.className = 'thumbnail-img';
                     img.alt = 'خلفية';
                     img.loading = 'lazy';
+                    img.onerror = () => {
+                        console.warn(`لا يمكن تحميل الخلفية: ${src}`);
+                        // يمكن إضافة صورة بديلة أو إخفاء العنصر
+                        div.style.display = 'none';
+                    };
                     
                     div.appendChild(img);
-                    div.dataset.src = url;
+                    div.dataset.src = src;
                     
                     div.addEventListener('click', function() {
                         document.querySelectorAll('#backgrounds-container .option-card').forEach(el => el.classList.remove('selected'));
@@ -834,29 +835,33 @@
                 });
             }
 
-            // تحميل المخطوطات من المجلد المحلي مع عكس الألوان للصورة المصغرة فقط
+            // تحميل المخطوطات من المجلد المحلي
             function loadCalligraphy(occasionKey) {
                 const container = document.getElementById('calligraphy-container');
                 container.innerHTML = '';
-                const filenames = calligraphyData[occasionKey] || [];
-                if (filenames.length === 0) {
+                const files = calligraphyFileLists[occasionKey] || [];
+                if (files.length === 0) {
                     container.innerHTML = '<p class="text-gray-500 text-sm">لا توجد مخطوطات متاحة لهذه المناسبة حالياً</p>';
                     return;
                 }
-                filenames.forEach((filename) => {
-                    // بناء المسار: images/مناسبة/calligraphy/الملف
-                    const url = `images/${occasionKey}/calligraphy/${filename}`;
+                files.forEach(filename => {
+                    // بناء المسار: images/[occasionKey]/calligraphy/[filename]
+                    const src = `images/${occasionKey}/calligraphy/${filename}`;
                     const div = document.createElement('div');
                     div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-32 bg-white border border-gray-300 flex items-center justify-center p-1';
                     
                     const img = document.createElement('img');
-                    img.src = url;
+                    img.src = src;
                     img.className = 'invert-thumbnail';
                     img.alt = 'مخطوطة';
                     img.loading = 'lazy';
+                    img.onerror = () => {
+                        console.warn(`لا يمكن تحميل المخطوطة: ${src}`);
+                        div.style.display = 'none';
+                    };
                     
                     div.appendChild(img);
-                    div.dataset.src = url;
+                    div.dataset.src = src;
                     
                     div.addEventListener('click', function() {
                         document.querySelectorAll('#calligraphy-container .option-card').forEach(el => el.classList.remove('selected'));
