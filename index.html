@@ -110,6 +110,19 @@
             object-fit: cover;
             border-radius: 12px;
         }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-pattern">
@@ -268,6 +281,7 @@
                         اختر الخلفية
                     </h2>
                     <div id="backgrounds-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto p-1"></div>
+                    <div id="background-error" class="text-red-500 text-sm mt-2 hidden"></div>
                     <div class="mt-6 flex justify-between">
                         <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 font-bold text-sm"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
                         <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:shadow-lg font-bold text-sm">التالي <i class="fas fa-arrow-left mr-2"></i></button>
@@ -282,6 +296,7 @@
                     </h2>
                     <p class="text-xs sm:text-sm text-gray-500 mb-4">اختر صورة PNG بخلفية شفافة (الخط أسود على خلفية شفافة)</p>
                     <div id="calligraphy-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-60 overflow-y-auto p-1"></div>
+                    <div id="calligraphy-error" class="text-red-500 text-sm mt-2 hidden"></div>
                     
                     <!-- اختيار لون المخطوطة -->
                     <div class="mt-4">
@@ -419,20 +434,20 @@
                 ]
             };
 
-            // قوائم الخلفيات لكل مناسبة (أسماء الملفات فقط)
+            // قوائم الخلفيات لكل مناسبة (أسماء الملفات كاملة مع الامتداد)
             const backgroundFileLists = {
-                'A': ['A1.JPG', 'A2.JPG', 'A3.JPG'],      // عيد الفطر
-                'B': ['B1.png', 'B2.png'],                // عيد الأضحى
-                'C': ['C1.png', 'C2.png', 'C3.png'],      // رمضان
-                'D': ['D1.png', 'D2.png', 'D3.png'],      // زواج
-                'E': ['E1.png', 'E2.png'],                // مولود
-                'F': ['F1.png', 'F2.png', 'F3.png'],      // نجاح/تخرج
-                'G': ['G1.png', 'G2.png'],                // عيد ميلاد
-                'H': ['H1.png', 'H2.png', 'H3.png'],      // العام الجديد
-                'I': ['I1.png', 'I2.png']                  // مخصص
+                'A': ['A1.jpg', 'A2.jpg', 'A3.jpg'],      // عيد الفطر
+                'B': ['B1.jpg', 'B2.jpg'],                // عيد الأضحى
+                'C': ['C1.jpg', 'C2.jpg', 'C3.jpg'],      // رمضان
+                'D': ['D1.jpg', 'D2.jpg', 'D3.jpg'],      // زواج
+                'E': ['E1.jpg', 'E2.jpg'],                // مولود
+                'F': ['F1.jpg', 'F2.jpg', 'F3.jpg'],      // نجاح/تخرج
+                'G': ['G1.jpg', 'G2.jpg'],                // عيد ميلاد
+                'H': ['H1.jpg', 'H2.jpg', 'H3.jpg'],      // العام الجديد
+                'I': ['I1.jpg', 'I2.jpg']                  // مخصص
             };
 
-            // قوائم المخطوطات لكل مناسبة
+            // قوائم المخطوطات لكل مناسبة (أسماء الملفات كاملة مع الامتداد - يفضل PNG)
             const calligraphyFileLists = {
                 'A': ['A1.png', 'A2.png'],      // عيد الفطر
                 'B': ['B1.png'],                 // عيد الأضحى
@@ -462,6 +477,8 @@
             const canvas = document.getElementById('cardCanvas');
             let ctx = canvas.getContext('2d');
             const errorDiv = document.getElementById('imageError');
+            const backgroundErrorDiv = document.getElementById('background-error');
+            const calligraphyErrorDiv = document.getElementById('calligraphy-error');
 
             // متغيرات للتحكم في التحميل
             let isDrawing = false;
@@ -498,6 +515,8 @@
                 loadedImages = 0;
                 imagesToLoad = 0;
                 errorDiv.classList.add('hidden');
+                backgroundErrorDiv.classList.add('hidden');
+                calligraphyErrorDiv.classList.add('hidden');
             }
 
             function drawCanvas() {
@@ -544,6 +563,8 @@
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 loadedImages++;
                 errorDiv.classList.remove('hidden');
+                backgroundErrorDiv.classList.remove('hidden');
+                backgroundErrorDiv.textContent = `فشل تحميل الخلفية: ${userChoices.backgroundSrc}. تأكد من وجود الصورة في المسار الصحيح.`;
                 if (loadedImages === imagesToLoad) {
                     proceedToNextLayer();
                 }
@@ -623,6 +644,8 @@
             calligraphyImage.onerror = function() {
                 console.error('فشل تحميل المخطوطة:', userChoices.calligraphySrc);
                 errorDiv.classList.remove('hidden');
+                calligraphyErrorDiv.classList.remove('hidden');
+                calligraphyErrorDiv.textContent = `فشل تحميل المخطوطة: ${userChoices.calligraphySrc}. تأكد من وجود الصورة في المسار الصحيح.`;
                 loadedImages++;
                 if (loadedImages === imagesToLoad) {
                     drawTexts(null);
@@ -803,10 +826,19 @@
             function loadBackgrounds(occasionKey) {
                 const container = document.getElementById('backgrounds-container');
                 container.innerHTML = '';
+                backgroundErrorDiv.classList.add('hidden');
+                
                 const files = backgroundFileLists[occasionKey] || [];
+                if (files.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-sm">لا توجد خلفيات متاحة لهذه المناسبة حالياً</p>';
+                    return;
+                }
+                
                 files.forEach(filename => {
                     // بناء المسار: images/[occasionKey]/backgrounds/[filename]
                     const src = `images/${occasionKey}/backgrounds/${filename}`;
+                    console.log('تحميل الخلفية:', src); // للتتبع
+                    
                     const div = document.createElement('div');
                     div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-28 flex items-center justify-center p-1';
                     
@@ -817,8 +849,12 @@
                     img.loading = 'lazy';
                     img.onerror = () => {
                         console.warn(`لا يمكن تحميل الخلفية: ${src}`);
-                        // يمكن إضافة صورة بديلة أو إخفاء العنصر
-                        div.style.display = 'none';
+                        div.style.display = 'none'; // إخفاء العنصر الفاشل
+                        backgroundErrorDiv.classList.remove('hidden');
+                        backgroundErrorDiv.textContent = `بعض الخلفيات لم يتم تحميلها. تأكد من وجود الملفات في المسار: images/${occasionKey}/backgrounds/`;
+                    };
+                    img.onload = () => {
+                        console.log(`تم تحميل الخلفية بنجاح: ${src}`);
                     };
                     
                     div.appendChild(img);
@@ -839,14 +875,19 @@
             function loadCalligraphy(occasionKey) {
                 const container = document.getElementById('calligraphy-container');
                 container.innerHTML = '';
+                calligraphyErrorDiv.classList.add('hidden');
+                
                 const files = calligraphyFileLists[occasionKey] || [];
                 if (files.length === 0) {
                     container.innerHTML = '<p class="text-gray-500 text-sm">لا توجد مخطوطات متاحة لهذه المناسبة حالياً</p>';
                     return;
                 }
+                
                 files.forEach(filename => {
                     // بناء المسار: images/[occasionKey]/calligraphy/[filename]
                     const src = `images/${occasionKey}/calligraphy/${filename}`;
+                    console.log('تحميل المخطوطة:', src); // للتتبع
+                    
                     const div = document.createElement('div');
                     div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-32 bg-white border border-gray-300 flex items-center justify-center p-1';
                     
@@ -857,7 +898,12 @@
                     img.loading = 'lazy';
                     img.onerror = () => {
                         console.warn(`لا يمكن تحميل المخطوطة: ${src}`);
-                        div.style.display = 'none';
+                        div.style.display = 'none'; // إخفاء العنصر الفاشل
+                        calligraphyErrorDiv.classList.remove('hidden');
+                        calligraphyErrorDiv.textContent = `بعض المخطوطات لم يتم تحميلها. تأكد من وجود الملفات في المسار: images/${occasionKey}/calligraphy/`;
+                    };
+                    img.onload = () => {
+                        console.log(`تم تحميل المخطوطة بنجاح: ${src}`);
                     };
                     
                     div.appendChild(img);
