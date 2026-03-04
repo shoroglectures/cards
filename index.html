@@ -580,7 +580,7 @@
             }
 
             // دالة لتلوين المخطوطة باستخدام قناع الشفافية فقط
-            function drawTintedCalligraphy(img, color) {
+            function drawTintedCalligraphy(img, color, diagonal) {
                 let width = canvas.width;
                 let height = canvas.height;
 
@@ -617,9 +617,10 @@
                 // وضع البيانات المعدلة في canvas المؤقت
                 tempCtx.putImageData(imageData, 0, 0);
 
-                // حساب أبعاد الرسم على canvas الرئيسي - نحافظ على نسبة الأبعاد
-                const maxWidth = width * 0.8;
-                const maxHeight = height * 0.5;
+                // حساب حجم المخطوطة بناءً على قطر البطاقة (35% من القطر)
+                const baseSize = diagonal * 0.35;
+                const maxWidth = baseSize;
+                const maxHeight = baseSize; // نحافظ على مربع تقريبي للمساحة
                 let imgWidth = img.width;
                 let imgHeight = img.height;
                 const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight, 1);
@@ -635,7 +636,10 @@
             }
 
             calligraphyImage.onload = function() {
-                const bottomY = drawTintedCalligraphy(calligraphyImage, userChoices.calligraphyColor);
+                let width = canvas.width;
+                let height = canvas.height;
+                const diagonal = Math.hypot(width, height);
+                const bottomY = drawTintedCalligraphy(calligraphyImage, userChoices.calligraphyColor, diagonal);
                 loadedImages++;
                 if (loadedImages === imagesToLoad) {
                     drawTexts(bottomY);
@@ -657,9 +661,10 @@
                 let height = canvas.height;
                 const hasCalligraphy = calligraphyBottomY !== null;
 
-                // حجم الخط يعتمد على قطر البطاقة ليبقى ثابتاً نسبياً بين الشكلين
+                // حساب قطر البطاقة
                 const diagonal = Math.hypot(width, height);
-                const baseFontSize = Math.round(diagonal * 0.04); // 4% من القطر ≈ 40-57 بكسل
+                // حجم الخط: 4% من القطر (حوالي 40-57 بكسل)
+                const baseFontSize = Math.round(diagonal * 0.04);
                 ctx.shadowColor = 'rgba(0,0,0,0.5)';
                 ctx.shadowBlur = 10;
                 ctx.shadowOffsetX = 3;
@@ -710,8 +715,8 @@
                             nameY = calligraphyBottomY + baseFontSize * 1.2;
                         }
                     } else {
-                        // لا مخطوطة، نضع الاسم في الأسفل كما كان (مع استخدام قيمة نسبية من القطر)
-                        nameY = height - diagonal * 0.12; // حوالي 120-170 بكسل من الأسفل
+                        // لا مخطوطة، نضع الاسم في الأسفل (12% من القطر من الأسفل)
+                        nameY = height - diagonal * 0.12;
                     }
                     ctx.fillText(userChoices.name, width / 2, nameY);
                 }
