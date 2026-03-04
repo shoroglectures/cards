@@ -484,6 +484,9 @@
             let isDrawing = false;
             let pendingDownload = false;
 
+            // آخر تنسيق تم رسمه (للتأكد من تطابق الأبعاد قبل التحميل)
+            let lastDrawnFormat = 'square';
+
             // رسم أولي: رسالة ترحيبية
             function drawEmptyCanvas() {
                 let width, height;
@@ -503,6 +506,7 @@
                 ctx.fillStyle = '#888';
                 ctx.textAlign = 'center';
                 ctx.fillText('✨ اختر المناسبة أولاً ✨', width/2, height/2);
+                lastDrawnFormat = userChoices.format;
             }
             drawEmptyCanvas();
 
@@ -538,6 +542,9 @@
                 canvas.width = width;
                 canvas.height = height;
                 ctx.clearRect(0, 0, width, height);
+
+                // تحديث آخر تنسيق تم رسمه
+                lastDrawnFormat = userChoices.format;
 
                 // رسم الخلفية
                 if (userChoices.backgroundSrc) {
@@ -663,9 +670,9 @@
 
                 // حساب قطر البطاقة
                 const diagonal = Math.hypot(width, height);
-                // حجم الخط الأساسي للرسالة: 4% من القطر
+                // حجم الخط الرئيسي: 4% من القطر
                 const baseFontSize = Math.round(diagonal * 0.04);
-                // حجم الاسم: 80% من حجم الخط الأساسي
+                // حجم الاسم: 80% من حجم الخط الرئيسي
                 const nameFontSize = Math.round(baseFontSize * 0.8);
                 
                 ctx.shadowColor = 'rgba(0,0,0,0.5)';
@@ -673,7 +680,7 @@
                 ctx.shadowOffsetX = 3;
                 ctx.shadowOffsetY = 3;
 
-                let lastY = null; // لتتبع آخر موضع للنص
+                let lastY = null; // آخر موضع نص (نهاية آخر سطر)
 
                 // رسم رسالة التهنئة
                 if (userChoices.message && userChoices.message.trim() !== '') {
@@ -711,12 +718,11 @@
                     let nameY;
                     if (hasCalligraphy) {
                         if (lastY !== null) {
-                            // هناك رسالة، نضع الاسم تحت آخر سطر بمسافة سطرين (2.8 * baseFontSize تقريباً)
-                            // بما أن الاسم بحجم أصغر، نضبط المسافة لتبدو متناسبة
-                            nameY = lastY + baseFontSize * 2.8;
+                            // هناك رسالة، نضع الاسم تحت آخر سطر بمسافة سطرين (2 * lineHeight للرسالة)
+                            nameY = lastY + (baseFontSize * 1.4 * 2);
                         } else {
                             // لا توجد رسالة، نضع الاسم تحت المخطوطة مباشرة بمسافة بسيطة
-                            nameY = calligraphyBottomY + baseFontSize * 2.0;
+                            nameY = calligraphyBottomY + baseFontSize * 1.2;
                         }
                     } else {
                         // لا مخطوطة، نضع الاسم في الأسفل (12% من القطر من الأسفل)
@@ -738,6 +744,15 @@
             // دالة التحميل الفعلية
             function performDownload() {
                 try {
+                    // التأكد من أن الكانفاس له الأبعاد الصحيحة حسب التنسيق المختار
+                    if (lastDrawnFormat !== userChoices.format) {
+                        // إذا كان التنسيق غير متطابق، نعيد الرسم ثم نؤجل التحميل
+                        drawCanvas();
+                        pendingDownload = true; // بعد الرسم سيتم التحميل
+                        return;
+                    }
+
+                    // استخدام أعلى جودة PNG
                     const dataURL = canvas.toDataURL('image/png');
                     const link = document.createElement('a');
                     link.download = `بطاقة_${userChoices.occasionName || 'تهنئة'}_${userChoices.format}.png`;
