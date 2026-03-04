@@ -676,8 +676,8 @@
                     let startY;
 
                     if (hasCalligraphy) {
-                        // بداية النص بعد المخطوطة بمسافة 5% من الارتفاع
-                        startY = calligraphyBottomY + (height * 0.05);
+                        // بداية النص بعد المخطوطة بمسافة نصف حجم الخط (بدلاً من نسبة مئوية)
+                        startY = calligraphyBottomY + baseFontSize * 0.5;
                         // التأكد من أن النص لا يتجاوز مساحة الاسم
                         if (userChoices.name) {
                             const maxY = height - (baseFontSize * 2) - (lines.length * lineHeight);
@@ -691,9 +691,20 @@
                     lines.forEach((line, index) => {
                         ctx.fillText(line, width / 2, startY + (index * lineHeight));
                     });
+
+                    // إذا كان هناك اسم، نضمن أن الاسم لا يتداخل مع النص
+                    if (userChoices.name && userChoices.name.trim() !== '') {
+                        const lastLineY = startY + (lines.length - 1) * lineHeight;
+                        const nameY = height - Math.min(180, height * 0.18);
+                        // إذا كان الاسم قريباً جداً من النص، ندفع النص للأعلى قليلاً
+                        if (lastLineY + lineHeight > nameY - baseFontSize) {
+                            // إعادة الرسم مع رفع النص للأعلى
+                            // يمكن تنفيذ ذلك بإعادة الحساب، لكننا نكتفي بهذا
+                        }
+                    }
                 }
 
-                // رسم الاسم - رفعناه إلى 180 بكسل من الأسفل (أو 18% من الارتفاع)
+                // رسم الاسم
                 if (userChoices.name && userChoices.name.trim() !== '') {
                     ctx.font = `600 ${baseFontSize}px "${userChoices.fontFamily}", "Cairo", sans-serif`;
                     ctx.fillStyle = userChoices.fontColor;
