@@ -657,8 +657,9 @@
                 let height = canvas.height;
                 const hasCalligraphy = calligraphyBottomY !== null;
 
-                // حجم الخط يتناسب مع عرض البطاقة (5% من العرض)
-                const baseFontSize = Math.round(width * 0.05);
+                // حجم الخط يعتمد على قطر البطاقة ليبقى ثابتاً نسبياً بين الشكلين
+                const diagonal = Math.hypot(width, height);
+                const baseFontSize = Math.round(diagonal * 0.04); // 4% من القطر ≈ 40-57 بكسل
                 ctx.shadowColor = 'rgba(0,0,0,0.5)';
                 ctx.shadowBlur = 10;
                 ctx.shadowOffsetX = 3;
@@ -709,8 +710,8 @@
                             nameY = calligraphyBottomY + baseFontSize * 1.2;
                         }
                     } else {
-                        // لا مخطوطة، نضع الاسم في الأسفل كما كان
-                        nameY = height - Math.min(180, height * 0.18);
+                        // لا مخطوطة، نضع الاسم في الأسفل كما كان (مع استخدام قيمة نسبية من القطر)
+                        nameY = height - diagonal * 0.12; // حوالي 120-170 بكسل من الأسفل
                     }
                     ctx.fillText(userChoices.name, width / 2, nameY);
                 }
