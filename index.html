@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>مصمم بطاقات التهنئة </title>
+    <title>مصمم بطاقات التهنئة ✨</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- خطوط عربية متعددة -->
@@ -22,6 +22,7 @@
             backdrop-filter: blur(4px);
             border: 2px solid transparent;
             font-size: 0.9rem;
+            cursor: pointer;
         }
         @media (min-width: 640px) {
             .step-item { font-size: 1rem; }
@@ -66,17 +67,13 @@
             color: white;
             border-color: #10b981;
         }
-        .celebration-icon {
-            font-size: 1.5rem;
-            color: #f59e0b;
-            animation: bounce 2s infinite;
+        .shadow-effect-btn {
+            transition: all 0.2s;
+            border: 2px solid transparent;
         }
-        @media (min-width: 640px) {
-            .celebration-icon { font-size: 2rem; }
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .shadow-effect-btn.active {
+            border-color: #4f46e5;
+            background: #e0e7ff;
         }
         .bg-pattern {
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><circle cx="10" cy="10" r="8" fill="%23f59e0b"/><circle cx="90" cy="30" r="12" fill="%234f46e5"/><circle cx="30" cy="80" r="10" fill="%2310b981"/></svg>');
@@ -93,22 +90,15 @@
             background: #c7c7c7;
             border-radius: 10px;
         }
-        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-            background: #a0a0a0;
-        }
-        /* فلتر عكس الألوان للصور المصغرة فقط */
-        .invert-thumbnail {
-            filter: invert(1);
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        /* لجعل الصور المصغرة للخلفية تظهر بشكل مربع وتغطي المساحة */
         .thumbnail-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             border-radius: 12px;
+        }
+        .calligraphy-thumb {
+            background: repeating-linear-gradient(45deg, #f0f0f0 0px, #f0f0f0 10px, #ffffff 10px, #ffffff 20px);
+            border: 1px solid #ddd;
         }
         .loading-spinner {
             border: 3px solid #f3f3f3;
@@ -123,6 +113,22 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        /* تحسين ظهور النصوص مع الظلال */
+        .text-preview {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        /* مؤشر خطوات متجاوب */
+        .steps-wrapper {
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            padding-bottom: 5px;
+        }
+        .steps-wrapper .step-item {
+            display: inline-flex;
+            float: none;
+        }
     </style>
 </head>
 <body class="bg-pattern">
@@ -131,35 +137,39 @@
     <header class="bg-white/90 backdrop-blur-sm shadow-lg py-4 sticky top-0 z-10">
         <div class="container mx-auto px-4 text-center">
             <div class="flex justify-center items-center gap-3 mb-1">
-                <i class="fas fa-star celebration-icon"></i>
-                <i class="fas fa-heart celebration-icon" style="animation-delay: 0.2s; color: #ec4899;"></i>
-                <i class="fas fa-moon celebration-icon" style="animation-delay: 0.4s; color: #4f46e5;"></i>
+                <i class="fas fa-star celebration-icon" style="animation: bounce 2s infinite; color: #f59e0b;"></i>
+                <i class="fas fa-heart celebration-icon" style="animation: bounce 2s infinite; animation-delay: 0.2s; color: #ec4899;"></i>
+                <i class="fas fa-moon celebration-icon" style="animation: bounce 2s infinite; animation-delay: 0.4s; color: #4f46e5;"></i>
             </div>
             <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
-                ✨ صمم بطاقة تهنئة  ✨
+                ✨ صمم بطاقة تهنئة ✨
             </h1>
             <p class="text-gray-600 mt-1 text-sm sm:text-base">اختر المناسبة، أضف لمساتك، وشارك الأحبة</p>
         </div>
     </header>
 
     <main class="container mx-auto px-4 py-6 max-w-7xl">
-        <!-- مؤشر الخطوات -->
-        <div class="flex flex-wrap justify-center gap-2 mb-6">
-            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="1">
+        <!-- مؤشر الخطوات (قابل للتمرير على الجوال) -->
+        <div class="steps-wrapper flex flex-nowrap justify-start gap-2 mb-6 pb-1">
+            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="1" aria-label="الخطوة 1: اختر المناسبة" tabindex="0">
                 <i class="fas fa-calendar-alt text-xs sm:text-sm"></i> <span class="text-xs sm:text-sm">١. المناسبة</span>
             </div>
-            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="2">
+            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="2" aria-label="الخطوة 2: اختر الرسالة" tabindex="0">
                 <i class="fas fa-pen text-xs sm:text-sm"></i> <span class="text-xs sm:text-sm">٢. الرسالة</span>
             </div>
-            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="3">
+            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="3" aria-label="الخطوة 3: اختر الخلفية" tabindex="0">
                 <i class="fas fa-image text-xs sm:text-sm"></i> <span class="text-xs sm:text-sm">٣. الخلفية</span>
             </div>
-            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="4">
+            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="4" aria-label="الخطوة 4: اختر المخطوطة" tabindex="0">
                 <i class="fas fa-paint-brush text-xs sm:text-sm"></i> <span class="text-xs sm:text-sm">٤. المخطوطة</span>
             </div>
-            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="5">
+            <div class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2" data-step="5" aria-label="الخطوة 5: اكتب الاسم" tabindex="0">
                 <i class="fas fa-signature text-xs sm:text-sm"></i> <span class="text-xs sm:text-sm">٥. الاسم</span>
             </div>
+            <!-- زر إعادة تعيين -->
+            <button id="resetBtn" class="step-item px-3 py-1 sm:px-5 sm:py-2 rounded-full shadow-md font-semibold flex items-center gap-1 sm:gap-2 bg-red-100 text-red-700 hover:bg-red-200 transition-all" aria-label="إعادة تعيين الكل">
+                <i class="fas fa-redo-alt text-xs sm:text-sm"></i> <span class="text-xs sm:text-sm">إعادة</span>
+            </button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -172,69 +182,60 @@
                         اختر المناسبة
                     </h2>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                        <!-- عيد الفطر (A) -->
-                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="عيد الفطر" data-occasion-key="A">
+                        <!-- عيد الفطر -->
+                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="عيد الفطر" data-occasion-key="A" role="button" tabindex="0" aria-label="مناسبة: عيد الفطر">
                             <span class="text-3xl sm:text-5xl">🍬</span>
                             <h3 class="font-bold mt-2 text-sm sm:text-lg">عيد الفطر</h3>
-                            <p class="text-gray-500 text-xs sm:text-sm">A</p>
                         </div>
-                        <!-- عيد الأضحى (B) -->
-                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="عيد الأضحى" data-occasion-key="B">
+                        <!-- عيد الأضحى -->
+                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="عيد الأضحى" data-occasion-key="B" role="button" tabindex="0" aria-label="مناسبة: عيد الأضحى">
                             <span class="text-3xl sm:text-5xl">🐑</span>
                             <h3 class="font-bold mt-2 text-sm sm:text-lg">عيد الأضحى</h3>
-                            <p class="text-gray-500 text-xs sm:text-sm">B</p>
                         </div>
-                        <!-- رمضان (C) -->
-                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="رمضان" data-occasion-key="C">
+                        <!-- رمضان -->
+                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="رمضان" data-occasion-key="C" role="button" tabindex="0" aria-label="مناسبة: رمضان">
                             <span class="text-3xl sm:text-5xl">🌙</span>
                             <h3 class="font-bold mt-2 text-sm sm:text-lg">رمضان</h3>
-                            <p class="text-gray-500 text-xs sm:text-sm">C</p>
                         </div>
-                        <!-- زواج (D) -->
-                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="زواج" data-occasion-key="D">
+                        <!-- زواج -->
+                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="زواج" data-occasion-key="D" role="button" tabindex="0" aria-label="مناسبة: زواج">
                             <span class="text-3xl sm:text-5xl">💍</span>
                             <h3 class="font-bold mt-2 text-sm sm:text-lg">زواج</h3>
-                            <p class="text-gray-500 text-xs sm:text-sm">D</p>
                         </div>
-                        <!-- مولود (E) -->
-                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="مولود" data-occasion-key="E">
+                        <!-- مولود -->
+                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="مولود" data-occasion-key="E" role="button" tabindex="0" aria-label="مناسبة: مولود">
                             <span class="text-3xl sm:text-5xl">👶</span>
                             <h3 class="font-bold mt-2 text-sm sm:text-lg">مولود</h3>
-                            <p class="text-gray-500 text-xs sm:text-sm">E</p>
                         </div>
-                        <!-- نجاح/تخرج (F) -->
-                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="نجاح/تخرج" data-occasion-key="F">
+                        <!-- نجاح/تخرج -->
+                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="نجاح/تخرج" data-occasion-key="F" role="button" tabindex="0" aria-label="مناسبة: نجاح/تخرج">
                             <span class="text-3xl sm:text-5xl">🎓</span>
                             <h3 class="font-bold mt-2 text-sm sm:text-lg">نجاح/تخرج</h3>
-                            <p class="text-gray-500 text-xs sm:text-sm">F</p>
                         </div>
-                        <!-- عيد ميلاد (G) -->
-                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="عيد ميلاد" data-occasion-key="G">
+                        <!-- عيد ميلاد -->
+                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="عيد ميلاد" data-occasion-key="G" role="button" tabindex="0" aria-label="مناسبة: عيد ميلاد">
                             <span class="text-3xl sm:text-5xl">🎂</span>
                             <h3 class="font-bold mt-2 text-sm sm:text-lg">عيد ميلاد</h3>
-                            <p class="text-gray-500 text-xs sm:text-sm">G</p>
                         </div>
-                        <!-- العام الجديد (H) -->
-                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="العام الجديد" data-occasion-key="H">
+                        <!-- العام الجديد -->
+                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="العام الجديد" data-occasion-key="H" role="button" tabindex="0" aria-label="مناسبة: العام الجديد">
                             <span class="text-3xl sm:text-5xl">🎊</span>
                             <h3 class="font-bold mt-2 text-sm sm:text-lg">العام الجديد</h3>
-                            <p class="text-gray-500 text-xs sm:text-sm">H</p>
                         </div>
-                        <!-- مخصص (I) -->
-                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="مخصص" data-occasion-key="I">
+                        <!-- مخصص -->
+                        <div class="option-card p-3 sm:p-5 text-center hover:shadow-xl" data-occasion="مخصص" data-occasion-key="I" role="button" tabindex="0" aria-label="مناسبة: مخصص">
                             <span class="text-3xl sm:text-5xl">✨</span>
                             <h3 class="font-bold mt-2 text-sm sm:text-lg">مخصص</h3>
-                            <p class="text-gray-500 text-xs sm:text-sm">I</p>
                         </div>
                     </div>
                     <div class="mt-6 sm:mt-8 flex justify-end">
-                        <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold text-sm sm:text-lg" disabled>
+                        <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold text-sm sm:text-lg" disabled aria-label="التالي">
                             التالي <i class="fas fa-arrow-left mr-2"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- الخطوة 2: رسالة التهنئة مع خيارات الخط واللون -->
+                <!-- الخطوة 2: رسالة التهنئة مع خيارات متقدمة -->
                 <div id="step-2" class="step-content hidden">
                     <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-3 text-indigo-700">
                         <span class="bg-indigo-100 w-8 h-8 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center">٢</span>
@@ -268,9 +269,37 @@
                         </div>
                     </div>
 
+                    <!-- خيارات حجم النص -->
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium mb-2 text-gray-700">حجم النص: <span id="fontSizeValue">100%</span></label>
+                        <input type="range" id="fontSizeSlider" min="50" max="200" value="100" class="w-full" aria-label="حجم الخط">
+                    </div>
+
+                    <!-- الموضع الأفقي للنص (حر) -->
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium mb-2 text-gray-700">الموضع الأفقي: <span id="textPositionValue">50% (وسط)</span></label>
+                        <input type="range" id="textPositionSlider" min="0" max="100" value="50" class="w-full" aria-label="الموضع الأفقي للنص">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>أقصى اليمين</span>
+                            <span>الوسط</span>
+                            <span>أقصى اليسار</span>
+                        </div>
+                    </div>
+
+                    <!-- تأثيرات الظل -->
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium mb-2 text-gray-700">تأثير الظل:</label>
+                        <select id="shadowEffect" class="w-full border-2 border-gray-200 rounded-xl p-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all text-sm">
+                            <option value="none">بدون ظل</option>
+                            <option value="light" selected>ظل خفيف</option>
+                            <option value="heavy">ظل ثقيل</option>
+                            <option value="colored">ظل ملون</option>
+                        </select>
+                    </div>
+
                     <div class="mt-6 flex justify-between">
-                        <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 transition-all font-bold text-sm"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
-                        <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:shadow-lg font-bold text-sm">التالي <i class="fas fa-arrow-left mr-2"></i></button>
+                        <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 transition-all font-bold text-sm" aria-label="السابق"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
+                        <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:shadow-lg font-bold text-sm" aria-label="التالي">التالي <i class="fas fa-arrow-left mr-2"></i></button>
                     </div>
                 </div>
 
@@ -280,11 +309,13 @@
                         <span class="bg-indigo-100 w-8 h-8 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center">٣</span>
                         اختر الخلفية
                     </h2>
+                    <!-- مؤشر تحميل -->
+                    <div id="backgroundsLoader" class="loading-spinner hidden"></div>
                     <div id="backgrounds-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto p-1"></div>
                     <div id="background-error" class="text-red-500 text-sm mt-2 hidden"></div>
                     <div class="mt-6 flex justify-between">
-                        <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 font-bold text-sm"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
-                        <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:shadow-lg font-bold text-sm">التالي <i class="fas fa-arrow-left mr-2"></i></button>
+                        <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 font-bold text-sm" aria-label="السابق"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
+                        <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:shadow-lg font-bold text-sm" aria-label="التالي">التالي <i class="fas fa-arrow-left mr-2"></i></button>
                     </div>
                 </div>
 
@@ -295,6 +326,8 @@
                         اختر المخطوطة
                     </h2>
                     <p class="text-xs sm:text-sm text-gray-500 mb-4">اختر صورة PNG بخلفية شفافة (الخط أسود على خلفية شفافة)</p>
+                    <!-- مؤشر تحميل -->
+                    <div id="calligraphyLoader" class="loading-spinner hidden"></div>
                     <div id="calligraphy-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-60 overflow-y-auto p-1"></div>
                     <div id="calligraphy-error" class="text-red-500 text-sm mt-2 hidden"></div>
                     
@@ -305,8 +338,8 @@
                     </div>
 
                     <div class="mt-6 flex justify-between">
-                        <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 font-bold text-sm"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
-                        <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:shadow-lg font-bold text-sm">التالي <i class="fas fa-arrow-left mr-2"></i></button>
+                        <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 font-bold text-sm" aria-label="السابق"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
+                        <button class="next-btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:shadow-lg font-bold text-sm" aria-label="التالي">التالي <i class="fas fa-arrow-left mr-2"></i></button>
                     </div>
                 </div>
 
@@ -316,26 +349,31 @@
                         <span class="bg-indigo-100 w-8 h-8 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center">٥</span>
                         اكتب اسمك
                     </h2>
-                    <input type="text" id="userName" placeholder="الاسم الذي يظهر أسفل البطاقة" class="w-full border-2 border-gray-200 rounded-xl p-3 sm:p-4 text-base focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all">
+                    <input type="text" id="userName" placeholder="الاسم الذي يظهر أسفل البطاقة" class="w-full border-2 border-gray-200 rounded-xl p-3 sm:p-4 text-base focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all" aria-label="الاسم">
                     <p class="text-xs sm:text-sm text-gray-500 mt-2">اختياري - يمكنك تركه فارغاً</p>
                     
                     <div class="mt-6">
                         <label class="block text-sm font-medium mb-3 text-gray-700">شكل البطاقة:</label>
                         <div class="flex gap-3">
-                            <button id="formatSquare" class="format-btn flex-1 border-3 border-indigo-600 text-indigo-600 font-bold py-2 sm:py-3 px-3 rounded-xl hover:bg-indigo-50 transition-all active flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                            <button id="formatSquare" class="format-btn flex-1 border-3 border-indigo-600 text-indigo-600 font-bold py-2 sm:py-3 px-3 rounded-xl hover:bg-indigo-50 transition-all active flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm" aria-label="شكل مربع">
                                 <i class="fas fa-square"></i> مربع
                             </button>
-                            <button id="formatPortrait" class="format-btn flex-1 border-3 border-gray-300 text-gray-700 font-bold py-2 sm:py-3 px-3 rounded-xl hover:bg-gray-50 transition-all flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                            <button id="formatPortrait" class="format-btn flex-1 border-3 border-gray-300 text-gray-700 font-bold py-2 sm:py-3 px-3 rounded-xl hover:bg-gray-50 transition-all flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm" aria-label="شكل طولي">
                                 <i class="fas fa-portrait"></i> طولي
                             </button>
                         </div>
                     </div>
 
-                    <div class="mt-6 flex justify-between items-center">
-                        <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 font-bold text-sm"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
-                        <button onclick="window.downloadCard()" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-2 sm:py-3 px-4 sm:px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-2 text-sm sm:text-lg">
-                            <i class="fas fa-download"></i> تحميل
-                        </button>
+                    <div class="mt-6 flex flex-wrap justify-between items-center gap-2">
+                        <button class="prev-btn bg-gray-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-600 font-bold text-sm" aria-label="السابق"><i class="fas fa-arrow-right ml-2"></i> السابق</button>
+                        <div class="flex gap-2">
+                            <button onclick="window.shareCard()" class="bg-gradient-to-r from-blue-500 to-cyan-600 text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-1 text-sm" aria-label="مشاركة البطاقة">
+                                <i class="fas fa-share-alt"></i> مشاركة
+                            </button>
+                            <button onclick="window.downloadCard()" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-2 text-sm sm:text-lg" aria-label="تحميل البطاقة">
+                                <i class="fas fa-download"></i> تحميل
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -344,6 +382,7 @@
             <div class="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-2xl border-4 border-white flex flex-col items-center">
                 <h2 class="text-xl sm:text-2xl font-bold mb-3 text-indigo-700 flex items-center gap-2">
                     <i class="fas fa-eye"></i> المعاينة
+                    <span id="selectedOccasionDisplay" class="text-sm bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full"></span>
                 </h2>
                 <div class="canvas-container w-full max-w-[350px] sm:max-w-[400px] mx-auto overflow-hidden">
                     <canvas id="cardCanvas" width="1000" height="1000" class="w-full h-auto"></canvas>
@@ -357,7 +396,7 @@
     </main>
 
     <footer class="text-center py-4 text-gray-600 text-xs sm:text-sm">
-        <p>© 2026 – مصصم بطاقات التهنئة  | قسم الدراسات العامة - كلية التقنية للبنات بنجران</p>
+        <p>© 2026 – مصصم بطاقات التهنئة | قسم الدراسات العامة - كلية التقنية للبنات بنجران</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -366,258 +405,148 @@
             // ---------- بيانات الموقع ----------
             const messagesData = {
                 'A': [ // عيد الفطر
-                    'كل عام وأنتم بخير',
-                    'تقبل الله طاعتكم',
-                    'عيد فطر سعيد',
-                    'أعاد الله عليكم بالخير والبركات',
-                    'كل سنة وأنتم طيبون',
-                    'عساكم من عواده'
+                    'كل عام وأنتم بخير', 'تقبل الله طاعتكم', 'عيد فطر سعيد', 'أعاد الله عليكم بالخير والبركات', 'كل سنة وأنتم طيبون', 'عساكم من عواده'
                 ],
                 'B': [ // عيد الأضحى
-                    'تقبل الله منا ومنكم',
-                    'كل عام وأنتم بخير',
-                    'عيد أضحى مبارك',
-                    'حج مبرور وذنب مغفور',
-                    'أيام تشريق سعيدة'
+                    'تقبل الله منا ومنكم', 'كل عام وأنتم بخير', 'عيد أضحى مبارك', 'حج مبرور وذنب مغفور', 'أيام تشريق سعيدة'
                 ],
                 'C': [ // رمضان
-                    'رمضان كريم',
-                    'كل عام وأنتم بخير',
-                    'شهر الخير والبركات',
-                    'أسأل الله أن يبلغنا رمضان',
-                    'رمضان شهر القرآن',
-                    'غفر الله لنا ولكم'
+                    'رمضان كريم', 'كل عام وأنتم بخير', 'شهر الخير والبركات', 'أسأل الله أن يبلغنا رمضان', 'رمضان شهر القرآن', 'غفر الله لنا ولكم'
                 ],
                 'D': [ // زواج
-                    'مبروك الزواج',
-                    'عقد قران مبارك',
-                    'ألف مبروك',
-                    'بارك الله لكما وبارك عليكما',
-                    'بالحب والسعادة',
-                    'حياة زوجية سعيدة'
+                    'مبروك الزواج', 'عقد قران مبارك', 'ألف مبروك', 'بارك الله لكما وبارك عليكما', 'بالحب والسعادة', 'حياة زوجية سعيدة'
                 ],
                 'E': [ // مولود
-                    'مبروك المولود',
-                    'جعله الله من الصالحين',
-                    'أهلاً وسهلاً بالضيف الجديد',
-                    'بقدومه عمت الأفراح',
-                    'ربنا يبارك فيه'
+                    'مبروك المولود', 'جعله الله من الصالحين', 'أهلاً وسهلاً بالضيف الجديد', 'بقدومه عمت الأفراح', 'ربنا يبارك فيه'
                 ],
                 'F': [ // نجاح/تخرج
-                    'ألف مبروك النجاح',
-                    'النجاح والتميز',
-                    'مبارك التفوق',
-                    'إلى الأمام دائماً',
-                    'نجاح باهر',
-                    'مبروك التخرج'
+                    'ألف مبروك النجاح', 'النجاح والتميز', 'مبارك التفوق', 'إلى الأمام دائماً', 'نجاح باهر', 'مبروك التخرج'
                 ],
                 'G': [ // عيد ميلاد
-                    'عيد ميلاد سعيد',
-                    'كل عام وأنت بخير',
-                    'سنة حلوة يا جميل',
-                    'عيد ميلاد سعيد وعمر مديد',
-                    'كل سنة وأنت طيب'
+                    'عيد ميلاد سعيد', 'كل عام وأنت بخير', 'سنة حلوة يا جميل', 'عيد ميلاد سعيد وعمر مديد', 'كل سنة وأنت طيب'
                 ],
                 'H': [ // العام الجديد
-                    'كل عام وأنتم بخير',
-                    'عام جديد سعيد',
-                    'سنة جديدة مباركة',
-                    'أماني عام جديد',
-                    'بمناسبة العام الجديد'
+                    'كل عام وأنتم بخير', 'عام جديد سعيد', 'سنة جديدة مباركة', 'أماني عام جديد', 'بمناسبة العام الجديد'
                 ],
                 'I': [ // مخصص
-                    'تهنئة خاصة',
-                    'أطيب التبريكات',
-                    'بكل الحب',
-                    'من القلب',
-                    'دعواتي لك بالخير'
+                    'تهنئة خاصة', 'أطيب التبريكات', 'بكل الحب', 'من القلب', 'دعواتي لك بالخير'
                 ]
             };
 
-            // قوائم الخلفيات لكل مناسبة (أسماء الملفات كاملة مع الامتداد)
+            // قوائم الخلفيات (كما هي)
             const backgroundFileLists = {
-                'A': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg',
- '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
- '21.jpg', '22.jpg', '23.jpg', '24.jpg', '25.jpg', '26.jpg', '27.jpg', '28.jpg', '29.jpg', '30.jpg',
- '31.jpg', '32.jpg', '33.jpg', '34.jpg', '35.jpg', '36.jpg', '37.jpg', '38.jpg', '39.jpg', '40.jpg',
- '41.jpg', '42.jpg', '43.jpg', '44.jpg', '45.jpg', '46.jpg', '47.jpg', '48.jpg', '49.jpg', '50.jpg',
- '51.jpg', '52.jpg', '53.jpg', '54.jpg', '55.jpg', '56.jpg', '57.jpg', '58.jpg', '59.jpg', '60.jpg',
- '61.jpg', '62.jpg', '63.jpg', '64.jpg', '65.jpg', '66.jpg', '67.jpg', '68.jpg', '69.jpg', '70.jpg',
- '71.jpg', '72.jpg', '73.jpg', '74.jpg', '75.jpg', '76.jpg', '77.jpg', '78.jpg', '79.jpg', '80.jpg',
- '81.jpg', '82.jpg', '83.jpg', '84.jpg', '85.jpg', '86.jpg', '87.jpg', '88.jpg', '89.jpg', '90.jpg',
- '91.jpg', '92.jpg', '93.jpg', '94.jpg'],      // عيد الفطر
-                'B': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg',
- '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
- '21.jpg', '22.jpg', '23.jpg', '24.jpg', '25.jpg', '26.jpg', '27.jpg', '28.jpg', '29.jpg', '30.jpg',
- '31.jpg', '32.jpg', '33.jpg', '34.jpg', '35.jpg', '36.jpg', '37.jpg', '38.jpg', '39.jpg', '40.jpg',
- '41.jpg', '42.jpg', '43.jpg', '44.jpg', '45.jpg', '46.jpg', '47.jpg', '48.jpg', '49.jpg', '50.jpg',
- '51.jpg', '52.jpg', '53.jpg', '54.jpg', '55.jpg', '56.jpg', '57.jpg', '58.jpg', '59.jpg', '60.jpg',
- '61.jpg', '62.jpg', '63.jpg', '64.jpg', '65.jpg', '66.jpg', '67.jpg', '68.jpg', '69.jpg', '70.jpg',
- '71.jpg', '72.jpg', '73.jpg', '74.jpg', '75.jpg', '76.jpg', '77.jpg', '78.jpg', '79.jpg', '80.jpg',
- '81.jpg', '82.jpg', '83.jpg', '84.jpg', '85.jpg', '86.jpg', '87.jpg', '88.jpg', '89.jpg', '90.jpg',
- '91.jpg', '92.jpg', '93.jpg', '94.jpg'],                // عيد الأضحى
-                'C': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg',
- '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
- '21.jpg', '22.jpg', '23.jpg', '24.jpg', '25.jpg', '26.jpg', '27.jpg', '28.jpg', '29.jpg', '30.jpg',
- '31.jpg', '32.jpg', '33.jpg', '34.jpg', '35.jpg', '36.jpg', '37.jpg', '38.jpg', '39.jpg', '40.jpg',
- '41.jpg', '42.jpg', '43.jpg', '44.jpg', '45.jpg', '46.jpg', '47.jpg', '48.jpg', '49.jpg', '50.jpg',
- '51.jpg', '52.jpg', '53.jpg', '54.jpg', '55.jpg', '56.jpg', '57.jpg', '58.jpg', '59.jpg', '60.jpg',
- '61.jpg', '62.jpg', '63.jpg', '64.jpg', '65.jpg', '66.jpg', '67.jpg', '68.jpg', '69.jpg', '70.jpg',
- '71.jpg', '72.jpg', '73.jpg', '74.jpg', '75.jpg', '76.jpg', '77.jpg', '78.jpg', '79.jpg', '80.jpg',
- '81.jpg', '82.jpg', '83.jpg', '84.jpg', '85.jpg', '86.jpg', '87.jpg', '88.jpg', '89.jpg', '90.jpg',
- '91.jpg', '92.jpg', '93.jpg', '94.jpg'],      // رمضان
-                'D': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg',
- '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
- '21.jpg', '22.jpg', '23.jpg', '24.jpg', '25.jpg', '26.jpg', '27.jpg', '28.jpg', '29.jpg', '30.jpg',
- '31.jpg', '32.jpg', '33.jpg', '34.jpg', '35.jpg', '36.jpg', '37.jpg', '38.jpg', '39.jpg', '40.jpg',
- '41.jpg', '42.jpg', '43.jpg', '44.jpg', '45.jpg', '46.jpg', '47.jpg', '48.jpg', '49.jpg', '50.jpg',
- '51.jpg', '52.jpg', '53.jpg', '54.jpg', '55.jpg', '56.jpg', '57.jpg', '58.jpg', '59.jpg', '60.jpg',
- '61.jpg', '62.jpg', '63.jpg', '64.jpg', '65.jpg', '66.jpg', '67.jpg', '68.jpg', '69.jpg', '70.jpg',
- '71.jpg', '72.jpg', '73.jpg', '74.jpg', '75.jpg', '76.jpg', '77.jpg', '78.jpg', '79.jpg', '80.jpg',
- '81.jpg', '82.jpg', '83.jpg', '84.jpg', '85.jpg', '86.jpg', '87.jpg', '88.jpg', '89.jpg', '90.jpg',
- '91.jpg', '92.jpg', '93.jpg', '94.jpg'],      // زواج
-                'E': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg',
- '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
- '21.jpg', '22.jpg', '23.jpg', '24.jpg', '25.jpg', '26.jpg', '27.jpg', '28.jpg', '29.jpg', '30.jpg',
- '31.jpg', '32.jpg', '33.jpg', '34.jpg', '35.jpg', '36.jpg', '37.jpg', '38.jpg', '39.jpg', '40.jpg',
- '41.jpg', '42.jpg', '43.jpg', '44.jpg', '45.jpg', '46.jpg', '47.jpg', '48.jpg', '49.jpg', '50.jpg',
- '51.jpg', '52.jpg', '53.jpg', '54.jpg', '55.jpg', '56.jpg', '57.jpg', '58.jpg', '59.jpg', '60.jpg',
- '61.jpg', '62.jpg', '63.jpg', '64.jpg', '65.jpg', '66.jpg', '67.jpg', '68.jpg', '69.jpg', '70.jpg',
- '71.jpg', '72.jpg', '73.jpg', '74.jpg', '75.jpg', '76.jpg', '77.jpg', '78.jpg', '79.jpg', '80.jpg',
- '81.jpg', '82.jpg', '83.jpg', '84.jpg', '85.jpg', '86.jpg', '87.jpg', '88.jpg', '89.jpg', '90.jpg',
- '91.jpg', '92.jpg', '93.jpg', '94.jpg'],                // مولود
-                'F': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg',
- '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
- '21.jpg', '22.jpg', '23.jpg', '24.jpg', '25.jpg', '26.jpg', '27.jpg', '28.jpg', '29.jpg', '30.jpg',
- '31.jpg', '32.jpg', '33.jpg', '34.jpg', '35.jpg', '36.jpg', '37.jpg', '38.jpg', '39.jpg', '40.jpg',
- '41.jpg', '42.jpg', '43.jpg', '44.jpg', '45.jpg', '46.jpg', '47.jpg', '48.jpg', '49.jpg', '50.jpg',
- '51.jpg', '52.jpg', '53.jpg', '54.jpg', '55.jpg', '56.jpg', '57.jpg', '58.jpg', '59.jpg', '60.jpg',
- '61.jpg', '62.jpg', '63.jpg', '64.jpg', '65.jpg', '66.jpg', '67.jpg', '68.jpg', '69.jpg', '70.jpg',
- '71.jpg', '72.jpg', '73.jpg', '74.jpg', '75.jpg', '76.jpg', '77.jpg', '78.jpg', '79.jpg', '80.jpg',
- '81.jpg', '82.jpg', '83.jpg', '84.jpg', '85.jpg', '86.jpg', '87.jpg', '88.jpg', '89.jpg', '90.jpg',
- '91.jpg', '92.jpg', '93.jpg', '94.jpg'],      // نجاح/تخرج
-                'G': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg',
- '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
- '21.jpg', '22.jpg', '23.jpg', '24.jpg', '25.jpg', '26.jpg', '27.jpg', '28.jpg', '29.jpg', '30.jpg',
- '31.jpg', '32.jpg', '33.jpg', '34.jpg', '35.jpg', '36.jpg', '37.jpg', '38.jpg', '39.jpg', '40.jpg',
- '41.jpg', '42.jpg', '43.jpg', '44.jpg', '45.jpg', '46.jpg', '47.jpg', '48.jpg', '49.jpg', '50.jpg',
- '51.jpg', '52.jpg', '53.jpg', '54.jpg', '55.jpg', '56.jpg', '57.jpg', '58.jpg', '59.jpg', '60.jpg',
- '61.jpg', '62.jpg', '63.jpg', '64.jpg', '65.jpg', '66.jpg', '67.jpg', '68.jpg', '69.jpg', '70.jpg',
- '71.jpg', '72.jpg', '73.jpg', '74.jpg', '75.jpg', '76.jpg', '77.jpg', '78.jpg', '79.jpg', '80.jpg',
- '81.jpg', '82.jpg', '83.jpg', '84.jpg', '85.jpg', '86.jpg', '87.jpg', '88.jpg', '89.jpg', '90.jpg',
- '91.jpg', '92.jpg', '93.jpg', '94.jpg'],                // عيد ميلاد
-                'H': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg',
- '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
- '21.jpg', '22.jpg', '23.jpg', '24.jpg', '25.jpg', '26.jpg', '27.jpg', '28.jpg', '29.jpg', '30.jpg',
- '31.jpg', '32.jpg', '33.jpg', '34.jpg', '35.jpg', '36.jpg', '37.jpg', '38.jpg', '39.jpg', '40.jpg',
- '41.jpg', '42.jpg', '43.jpg', '44.jpg', '45.jpg', '46.jpg', '47.jpg', '48.jpg', '49.jpg', '50.jpg',
- '51.jpg', '52.jpg', '53.jpg', '54.jpg', '55.jpg', '56.jpg', '57.jpg', '58.jpg', '59.jpg', '60.jpg',
- '61.jpg', '62.jpg', '63.jpg', '64.jpg', '65.jpg', '66.jpg', '67.jpg', '68.jpg', '69.jpg', '70.jpg',
- '71.jpg', '72.jpg', '73.jpg', '74.jpg', '75.jpg', '76.jpg', '77.jpg', '78.jpg', '79.jpg', '80.jpg',
- '81.jpg', '82.jpg', '83.jpg', '84.jpg', '85.jpg', '86.jpg', '87.jpg', '88.jpg', '89.jpg', '90.jpg',
- '91.jpg', '92.jpg', '93.jpg', '94.jpg'],      // العام الجديد
-                'I': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg',
- '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
- '21.jpg', '22.jpg', '23.jpg', '24.jpg', '25.jpg', '26.jpg', '27.jpg', '28.jpg', '29.jpg', '30.jpg',
- '31.jpg', '32.jpg', '33.jpg', '34.jpg', '35.jpg', '36.jpg', '37.jpg', '38.jpg', '39.jpg', '40.jpg',
- '41.jpg', '42.jpg', '43.jpg', '44.jpg', '45.jpg', '46.jpg', '47.jpg', '48.jpg', '49.jpg', '50.jpg',
- '51.jpg', '52.jpg', '53.jpg', '54.jpg', '55.jpg', '56.jpg', '57.jpg', '58.jpg', '59.jpg', '60.jpg',
- '61.jpg', '62.jpg', '63.jpg', '64.jpg', '65.jpg', '66.jpg', '67.jpg', '68.jpg', '69.jpg', '70.jpg',
- '71.jpg', '72.jpg', '73.jpg', '74.jpg', '75.jpg', '76.jpg', '77.jpg', '78.jpg', '79.jpg', '80.jpg',
- '81.jpg', '82.jpg', '83.jpg', '84.jpg', '85.jpg', '86.jpg', '87.jpg', '88.jpg', '89.jpg', '90.jpg',
- '91.jpg', '92.jpg', '93.jpg', '94.jpg']                  // مخصص
+                'A': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg'],
+                'B': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg'],
+                'C': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg'],
+                'D': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg'],
+                'E': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg'],
+                'F': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg'],
+                'G': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg'],
+                'H': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg'],
+                'I': ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg']
             };
 
-            // قوائم المخطوطات لكل مناسبة (أسماء الملفات كاملة مع الامتداد - يفضل PNG)
+            // قوائم المخطوطات
             const calligraphyFileLists = {
-                'A': ['A1.png', 'A2.png','A3.png', 'A4.png','A5.png', 'A6.png','A7.png', 'A8.png','A9.png',
-                      'A10.png','A11.png', 'A12.png','A13.png', 'A14.png','A15.png', 'A16.png','A17.png', 'A18.png','A19.png', 'A20.png',
-                      'A21.png', 'A22.png','A23.png', 'A24.png','A25.png', 'A26.png','A27.png', 'A28.png','A29.png', 'A30.png','A31.png',
-                      'A32.png','A33.png', 'A34.png','A35.png', 'A36.png','A37.png', 'A38.png','A39.png', 'A40.png','A41.png', 'A42.png',
-                      'A43.png', 'A44.png','A45.png', 'A46.png','A47.png', 'A48.png','A49.png', 'A50.png','A51.png', 'A52.png','A53.png',
-                      'A54.png','A55.png', 'A56.png','A57.png', 'A58.png','A59.png', 'A60.png','A61.png', 'A62.png','A63.png', 'A64.png',
-                      'A65.png', 'A66.png','A67.png', 'A68.png','A69.png', 'A70.png','A71.png', 'A72.png'],      // عيد الفطر
-                'B': ['B1.png','B2.png','B3.png','B4.png','B5.png','B6.png','B7.png','B8.png','B9.png','B10.png',
-'B11.png','B12.png','B13.png','B14.png','B15.png','B16.png','B17.png','B18.png','B19.png','B20.png',
-'B21.png','B22.png','B23.png','B24.png','B25.png','B26.png','B27.png','B28.png','B29.png','B30.png',
-'B31.png','B32.png','B33.png','B34.png','B35.png','B36.png','B37.png','B38.png','B39.png','B40.png',
-'B41.png','B42.png','B43.png','B44.png','B45.png','B46.png','B47.png','B48.png','B49.png','B50.png'],                 // عيد الأضحى
-                'C': ['C1.png','C2.png','C3.png','C4.png','C5.png','C6.png','C7.png','C8.png','C9.png','C10.png',
-'C11.png','C12.png','C13.png','C14.png','C15.png','C16.png','C17.png','C18.png','C19.png','C20.png',
-'C21.png','C22.png','C23.png','C24.png','C25.png','C26.png','C27.png','C28.png','C29.png','C30.png',
-'C31.png','C32.png','C33.png','C34.png','C35.png','C36.png','C37.png','C38.png','C39.png','C40.png',
-'C41.png','C42.png','C43.png','C44.png','C45.png','C46.png','C47.png','C48.png','C49.png','C50.png'],       // رمضان
-                'D': ['D1.png', 'D2.png'],       // زواج
-                'E': ['E1.png'],                  // مولود
-                'F': ['F1.png', 'F2.png'],        // نجاح/تخرج
-                'G': ['G1.png'],                   // عيد ميلاد
-                'H': ['H1.png', 'H2.png'],        // العام الجديد
-                'I': ['I1.png']                    // مخصص
+                'A': ['A1.png', 'A2.png', 'A3.png', 'A4.png', 'A5.png', 'A6.png', 'A7.png', 'A8.png', 'A9.png', 'A10.png'],
+                'B': ['B1.png', 'B2.png', 'B3.png', 'B4.png', 'B5.png'],
+                'C': ['C1.png', 'C2.png', 'C3.png', 'C4.png', 'C5.png'],
+                'D': ['D1.png', 'D2.png'],
+                'E': ['E1.png'],
+                'F': ['F1.png', 'F2.png'],
+                'G': ['G1.png'],
+                'H': ['H1.png', 'H2.png'],
+                'I': ['I1.png']
             };
 
-            // حالة المستخدم
+            // حالة المستخدم (مع خيارات جديدة)
             let userChoices = {
                 occasionKey: null,
                 occasionName: null,
-                message: null,
+                message: '',
                 backgroundSrc: null,
                 calligraphySrc: null,
                 name: '',
                 format: 'square',
                 fontFamily: 'Cairo',
                 fontColor: '#ffffff',
+                fontSizePercent: 100,
+                textPosition: 50, // 0 = أقصى اليمين, 100 = أقصى اليسار
+                shadowEffect: 'light', // none, light, heavy, colored
                 calligraphyColor: '#ffffff'
             };
 
+            // محاولة تحميل الحالة من localStorage
+            function loadFromStorage() {
+                const saved = localStorage.getItem('cardDesignerState');
+                if (saved) {
+                    try {
+                        const parsed = JSON.parse(saved);
+                        userChoices = { ...userChoices, ...parsed };
+                        // تطبيق القيم على واجهة المستخدم
+                        applyChoicesToUI();
+                        drawCanvas();
+                    } catch (e) {
+                        console.warn('فشل تحميل الحفظ', e);
+                    }
+                }
+            }
+
+            // حفظ الحالة في localStorage
+            function saveToStorage() {
+                try {
+                    localStorage.setItem('cardDesignerState', JSON.stringify(userChoices));
+                } catch (e) {
+                    console.warn('فشل الحفظ', e);
+                }
+            }
+
+            // تطبيق القيم المحفوظة على عناصر التحكم
+            function applyChoicesToUI() {
+                if (userChoices.occasionKey) {
+                    document.querySelectorAll('[data-occasion-key]').forEach(el => {
+                        if (el.dataset.occasionKey === userChoices.occasionKey) {
+                            el.classList.add('selected');
+                        } else {
+                            el.classList.remove('selected');
+                        }
+                    });
+                    document.getElementById('selectedOccasionDisplay').textContent = userChoices.occasionName || '';
+                }
+                document.getElementById('customMessage').value = userChoices.message || '';
+                document.getElementById('fontFamilySelect').value = userChoices.fontFamily;
+                document.getElementById('fontColorInput').value = userChoices.fontColor;
+                document.getElementById('fontSizeSlider').value = userChoices.fontSizePercent;
+                document.getElementById('fontSizeValue').textContent = userChoices.fontSizePercent + '%';
+                document.getElementById('textPositionSlider').value = userChoices.textPosition;
+                updateTextPositionLabel(userChoices.textPosition);
+                document.getElementById('shadowEffect').value = userChoices.shadowEffect;
+                document.getElementById('calligraphyColorInput').value = userChoices.calligraphyColor;
+                document.getElementById('userName').value = userChoices.name || '';
+            }
+
+            function updateTextPositionLabel(value) {
+                const val = parseInt(value);
+                let desc = '';
+                if (val < 33) desc = 'يمين';
+                else if (val > 66) desc = 'يسار';
+                else desc = 'وسط';
+                document.getElementById('textPositionValue').textContent = val + '% (' + desc + ')';
+            }
+
+            // canvas المعاينة
             const canvas = document.getElementById('cardCanvas');
             let ctx = canvas.getContext('2d');
             const errorDiv = document.getElementById('imageError');
             const backgroundErrorDiv = document.getElementById('background-error');
             const calligraphyErrorDiv = document.getElementById('calligraphy-error');
+            const selectedOccasionDisplay = document.getElementById('selectedOccasionDisplay');
 
-            // متغيرات للتحكم في التحميل
             let isDrawing = false;
             let pendingDownload = false;
+            let pendingShare = false;
 
-            // آخر تنسيق تم رسمه (للتأكد من تطابق الأبعاد قبل التحميل)
-            let lastDrawnFormat = 'square';
-
-            // رسم أولي: رسالة ترحيبية
-            function drawEmptyCanvas() {
-                let width, height;
-                if (userChoices.format === 'square') {
-                    width = 1000;
-                    height = 1000;
-                } else {
-                    width = 800;
-                    height = 1200;
-                }
-                canvas.width = width;
-                canvas.height = height;
-                ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#f8e8d9';
-                ctx.fillRect(0, 0, width, height);
-                ctx.font = '40px "Cairo", sans-serif';
-                ctx.fillStyle = '#888';
-                ctx.textAlign = 'center';
-                ctx.fillText('✨ اختر المناسبة أولاً ✨', width/2, height/2);
-                lastDrawnFormat = userChoices.format;
-            }
-            drawEmptyCanvas();
-
-            let bgImage = new Image();
-            let calligraphyImage = new Image();
-            let imagesToLoad = 0;
-            let loadedImages = 0;
-
-            function resetImageLoad() {
-                loadedImages = 0;
-                imagesToLoad = 0;
-                errorDiv.classList.add('hidden');
-                backgroundErrorDiv.classList.add('hidden');
-                calligraphyErrorDiv.classList.add('hidden');
-            }
-
+            // دالة لرسم الخلفية فقط (تستخدم للمعاينة)
             function drawCanvas() {
                 if (!userChoices.occasionKey) {
                     drawEmptyCanvas();
@@ -625,7 +554,6 @@
                 }
 
                 isDrawing = true;
-                resetImageLoad();
                 let width, height;
                 if (userChoices.format === 'square') {
                     width = 1000;
@@ -638,228 +566,284 @@
                 canvas.height = height;
                 ctx.clearRect(0, 0, width, height);
 
-                // تحديث آخر تنسيق تم رسمه
-                lastDrawnFormat = userChoices.format;
-
-                // رسم الخلفية
+                // رسم الخلفية (لون أو صورة)
                 if (userChoices.backgroundSrc) {
-                    imagesToLoad++;
-                    bgImage.src = userChoices.backgroundSrc;
+                    const bgImg = new Image();
+                    bgImg.crossOrigin = 'anonymous';
+                    bgImg.onload = () => {
+                        ctx.drawImage(bgImg, 0, 0, width, height);
+                        proceedToCalligraphy();
+                    };
+                    bgImg.onerror = () => {
+                        ctx.fillStyle = '#ffd7be';
+                        ctx.fillRect(0, 0, width, height);
+                        backgroundErrorDiv.classList.remove('hidden');
+                        backgroundErrorDiv.textContent = 'فشل تحميل الخلفية';
+                        proceedToCalligraphy();
+                    };
+                    bgImg.src = userChoices.backgroundSrc;
                 } else {
                     ctx.fillStyle = '#ffd7be';
                     ctx.fillRect(0, 0, width, height);
-                    proceedToNextLayer();
+                    proceedToCalligraphy();
                 }
-            }
 
-            bgImage.onload = function() {
-                ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
-                loadedImages++;
-                if (loadedImages === imagesToLoad) {
-                    proceedToNextLayer();
-                }
-            };
-            bgImage.onerror = function() {
-                console.error('فشل تحميل الخلفية:', userChoices.backgroundSrc);
-                ctx.fillStyle = '#ffd7be';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                loadedImages++;
-                errorDiv.classList.remove('hidden');
-                backgroundErrorDiv.classList.remove('hidden');
-                backgroundErrorDiv.textContent = `فشل تحميل الخلفية: ${userChoices.backgroundSrc}. تأكد من وجود الصورة في المسار الصحيح.`;
-                if (loadedImages === imagesToLoad) {
-                    proceedToNextLayer();
-                }
-            };
-
-            function proceedToNextLayer() {
-                if (userChoices.calligraphySrc) {
-                    imagesToLoad++;
-                    calligraphyImage.src = userChoices.calligraphySrc;
-                } else {
-                    drawTexts(null);
-                }
-            }
-
-            // دالة لتلوين المخطوطة باستخدام قناع الشفافية فقط
-            function drawTintedCalligraphy(img, color, diagonal) {
-                let width = canvas.width;
-                let height = canvas.height;
-
-                // إنشاء canvas مؤقت بنفس أبعاد الصورة الأصلية
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = img.width;
-                tempCanvas.height = img.height;
-                const tempCtx = tempCanvas.getContext('2d');
-
-                // رسم الصورة على canvas المؤقت
-                tempCtx.drawImage(img, 0, 0);
-
-                // الحصول على بيانات الصورة
-                const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
-                const data = imageData.data;
-
-                // تحليل اللون المختار إلى مكونات RGB
-                const rColor = parseInt(color.slice(1,3), 16);
-                const gColor = parseInt(color.slice(3,5), 16);
-                const bColor = parseInt(color.slice(5,7), 16);
-
-                // تعديل البكسلات: نغير لون كل بكسل غير شفاف إلى اللون الجديد مع الحفاظ على alpha
-                for (let i = 0; i < data.length; i += 4) {
-                    const alpha = data[i+3];
-                    if (alpha > 0) {
-                        // نضرب اللون الجديد بنسبة alpha للحفاظ على التدرج إن وجد
-                        data[i] = (rColor * alpha) / 255;
-                        data[i+1] = (gColor * alpha) / 255;
-                        data[i+2] = (bColor * alpha) / 255;
-                        // alpha يبقى كما هو
+                function proceedToCalligraphy() {
+                    if (userChoices.calligraphySrc) {
+                        const callImg = new Image();
+                        callImg.crossOrigin = 'anonymous';
+                        callImg.onload = () => {
+                            drawTintedCalligraphy(callImg, userChoices.calligraphyColor, width, height);
+                            drawTexts();
+                        };
+                        callImg.onerror = () => {
+                            calligraphyErrorDiv.classList.remove('hidden');
+                            calligraphyErrorDiv.textContent = 'فشل تحميل المخطوطة';
+                            drawTexts();
+                        };
+                        callImg.src = userChoices.calligraphySrc;
+                    } else {
+                        drawTexts();
                     }
                 }
 
-                // وضع البيانات المعدلة في canvas المؤقت
-                tempCtx.putImageData(imageData, 0, 0);
-
-                // حساب حجم المخطوطة بناءً على قطر البطاقة (35% من القطر)
-                const baseSize = diagonal * 0.35;
-                const maxWidth = baseSize;
-                const maxHeight = baseSize; // نحافظ على مربع تقريبي للمساحة
-                let imgWidth = img.width;
-                let imgHeight = img.height;
-                const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight, 1);
-                const drawWidth = imgWidth * ratio;
-                const drawHeight = imgHeight * ratio;
-                const drawX = (width - drawWidth) / 2;
-                const drawY = (height - drawHeight) / 2 - 50 * (height / 1000); // تصغير الإزاحة في الطولي
-
-                // رسم الصورة المعدلة على canvas الرئيسي
-                ctx.drawImage(tempCanvas, 0, 0, img.width, img.height, drawX, drawY, drawWidth, drawHeight);
-
-                return drawY + drawHeight;
-            }
-
-            calligraphyImage.onload = function() {
-                let width = canvas.width;
-                let height = canvas.height;
-                const diagonal = Math.hypot(width, height);
-                const bottomY = drawTintedCalligraphy(calligraphyImage, userChoices.calligraphyColor, diagonal);
-                loadedImages++;
-                if (loadedImages === imagesToLoad) {
-                    drawTexts(bottomY);
+                function drawTintedCalligraphy(img, color, canvasWidth, canvasHeight) {
+                    // تلوين سريع باستخدام composite
+                    ctx.save();
+                    ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+                    ctx.globalCompositeOperation = 'source-in';
+                    ctx.fillStyle = color;
+                    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+                    ctx.restore();
                 }
-            };
-            calligraphyImage.onerror = function() {
-                console.error('فشل تحميل المخطوطة:', userChoices.calligraphySrc);
-                errorDiv.classList.remove('hidden');
-                calligraphyErrorDiv.classList.remove('hidden');
-                calligraphyErrorDiv.textContent = `فشل تحميل المخطوطة: ${userChoices.calligraphySrc}. تأكد من وجود الصورة في المسار الصحيح.`;
-                loadedImages++;
-                if (loadedImages === imagesToLoad) {
-                    drawTexts(null);
-                }
-            };
 
-            function drawTexts(calligraphyBottomY) {
-                let width = canvas.width;
-                let height = canvas.height;
-                const hasCalligraphy = calligraphyBottomY !== null;
+                function drawTexts() {
+                    const diagonal = Math.hypot(width, height);
+                    const baseFontSize = Math.round(diagonal * 0.04 * (userChoices.fontSizePercent / 100));
+                    const nameFontSize = Math.round(baseFontSize * 0.8);
+                    
+                    // إعداد الظل حسب الاختيار
+                    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                    ctx.shadowBlur = 0;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                    
+                    switch (userChoices.shadowEffect) {
+                        case 'light':
+                            ctx.shadowBlur = 5;
+                            ctx.shadowOffsetX = 2;
+                            ctx.shadowOffsetY = 2;
+                            ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                            break;
+                        case 'heavy':
+                            ctx.shadowBlur = 10;
+                            ctx.shadowOffsetX = 4;
+                            ctx.shadowOffsetY = 4;
+                            ctx.shadowColor = 'rgba(0,0,0,0.7)';
+                            break;
+                        case 'colored':
+                            ctx.shadowBlur = 8;
+                            ctx.shadowOffsetX = 3;
+                            ctx.shadowOffsetY = 3;
+                            ctx.shadowColor = '#f59e0b';
+                            break;
+                        default:
+                            // بدون ظل
+                    }
 
-                // حساب قطر البطاقة
-                const diagonal = Math.hypot(width, height);
-                // حجم الخط الرئيسي: 4% من القطر
-                const baseFontSize = Math.round(diagonal * 0.04);
-                // حجم الاسم: 80% من حجم الخط الرئيسي
-                const nameFontSize = Math.round(baseFontSize * 0.8);
-                
-                ctx.shadowColor = 'rgba(0,0,0,0.5)';
-                ctx.shadowBlur = 10;
-                ctx.shadowOffsetX = 3;
-                ctx.shadowOffsetY = 3;
-
-                let lastY = null; // آخر موضع نص (نهاية آخر سطر)
-
-                // رسم رسالة التهنئة
-                if (userChoices.message && userChoices.message.trim() !== '') {
                     ctx.font = `600 ${baseFontSize}px "${userChoices.fontFamily}", "Cairo", sans-serif`;
                     ctx.fillStyle = userChoices.fontColor;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-
-                    const lines = userChoices.message.split('\n');
-                    const lineHeight = baseFontSize * 1.4;
-                    let startY;
-
-                    if (hasCalligraphy) {
-                        // بداية النص بعد المخطوطة بمسافة نصف حجم الخط
-                        startY = calligraphyBottomY + baseFontSize * 0.5;
-                    } else {
-                        // إذا لم توجد مخطوطة، نضع النص في الثلث العلوي
-                        startY = height * 0.3;
+                    ctx.textAlign = 'center'; // دائمًا center مع التحكم في الموضع
+                    
+                    // حساب الموضع الأفقي: 0 = أقصى اليمين (x = 0 + 50? نريد أن يكون النص داخل الإطار)
+                    // نستخدم القيمة كنسبة من العرض، مع هامش 50 بكسل من الحواف
+                    const margin = 50;
+                    const minX = margin;
+                    const maxX = width - margin;
+                    const textX = minX + (userChoices.textPosition / 100) * (maxX - minX);
+                    
+                    let startY = height * 0.3;
+                    
+                    if (userChoices.message) {
+                        const lines = userChoices.message.split('\n');
+                        const lineHeight = baseFontSize * 1.4;
+                        lines.forEach((line, i) => {
+                            ctx.fillText(line, textX, startY + i * lineHeight);
+                        });
                     }
 
-                    lines.forEach((line, index) => {
-                        const y = startY + (index * lineHeight);
-                        ctx.fillText(line, width / 2, y);
-                        lastY = y + lineHeight / 2; // نهاية هذا السطر تقريباً
-                    });
-                }
-
-                // رسم الاسم - إذا كان موجوداً
-                if (userChoices.name && userChoices.name.trim() !== '') {
-                    ctx.font = `600 ${nameFontSize}px "${userChoices.fontFamily}", "Cairo", sans-serif`;
-                    ctx.fillStyle = userChoices.fontColor;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-
-                    let nameY;
-                    if (hasCalligraphy) {
-                        if (lastY !== null) {
-                            // هناك رسالة، نضع الاسم تحت آخر سطر بمسافة سطرين (2 * lineHeight للرسالة)
-                            nameY = lastY + (baseFontSize * 1.4 * 2);
-                        } else {
-                            // لا توجد رسالة، نضع الاسم تحت المخطوطة مباشرة بمسافة بسيطة
-                            nameY = calligraphyBottomY + baseFontSize * 1.2;
-                        }
-                    } else {
-                        // لا مخطوطة، نضع الاسم في الأسفل (12% من القطر من الأسفل)
-                        nameY = height - diagonal * 0.12;
+                    if (userChoices.name) {
+                        ctx.font = `600 ${nameFontSize}px "${userChoices.fontFamily}", "Cairo", sans-serif`;
+                        ctx.fillText(userChoices.name, textX, height - 100);
                     }
-                    ctx.fillText(userChoices.name, width / 2, nameY);
-                }
 
-                ctx.shadowBlur = 0;
-
-                // انتهى الرسم
-                isDrawing = false;
-                if (pendingDownload) {
-                    pendingDownload = false;
-                    performDownload();
+                    ctx.shadowBlur = 0;
+                    isDrawing = false;
+                    if (pendingDownload) {
+                        pendingDownload = false;
+                        performHighResDownload();
+                    }
+                    if (pendingShare) {
+                        pendingShare = false;
+                        performShare();
+                    }
                 }
             }
 
-            // دالة التحميل الفعلية
-            function performDownload() {
+            function drawEmptyCanvas() {
+                let width = userChoices.format === 'square' ? 1000 : 800;
+                let height = userChoices.format === 'square' ? 1000 : 1200;
+                canvas.width = width;
+                canvas.height = height;
+                ctx.fillStyle = '#f8e8d9';
+                ctx.fillRect(0, 0, width, height);
+                ctx.font = '40px "Cairo", sans-serif';
+                ctx.fillStyle = '#888';
+                ctx.textAlign = 'center';
+                ctx.fillText('✨ اختر المناسبة أولاً ✨', width/2, height/2);
+                selectedOccasionDisplay.textContent = '';
+            }
+
+            // ---------- دوال التحميل عالي الدقة ----------
+            async function performHighResDownload() {
                 try {
-                    // التأكد من أن الكانفاس له الأبعاد الصحيحة حسب التنسيق المختار
-                    if (lastDrawnFormat !== userChoices.format) {
-                        // إذا كان التنسيق غير متطابق، نعيد الرسم ثم نؤجل التحميل
-                        drawCanvas();
-                        pendingDownload = true; // بعد الرسم سيتم التحميل
-                        return;
+                    // إنشاء canvas بدقة عالية
+                    const highResCanvas = document.createElement('canvas');
+                    let targetWidth, targetHeight;
+                    if (userChoices.format === 'square') {
+                        targetWidth = 2400;
+                        targetHeight = 2400;
+                    } else {
+                        targetWidth = 1800;
+                        targetHeight = 2700;
+                    }
+                    highResCanvas.width = targetWidth;
+                    highResCanvas.height = targetHeight;
+                    const hrCtx = highResCanvas.getContext('2d');
+
+                    // رسم الخلفية عالية الدقة
+                    if (userChoices.backgroundSrc) {
+                        await drawImageOnCanvas(hrCtx, userChoices.backgroundSrc, 0, 0, targetWidth, targetHeight);
+                    } else {
+                        hrCtx.fillStyle = '#ffd7be';
+                        hrCtx.fillRect(0, 0, targetWidth, targetHeight);
                     }
 
-                    // استخدام أعلى جودة PNG
-                    const dataURL = canvas.toDataURL('image/png');
-                    const link = document.createElement('a');
-                    link.download = `بطاقة_${userChoices.occasionName || 'تهنئة'}_${userChoices.format}.png`;
-                    link.href = dataURL;
-                    link.click();
+                    // رسم المخطوطة
+                    if (userChoices.calligraphySrc) {
+                        const callImg = await loadImage(userChoices.calligraphySrc);
+                        // تلوين المخطوطة وتوسيطها
+                        const diagonal = Math.hypot(targetWidth, targetHeight);
+                        const baseSize = diagonal * 0.35;
+                        const ratio = Math.min(baseSize / callImg.width, baseSize / callImg.height, 1);
+                        const drawWidth = callImg.width * ratio;
+                        const drawHeight = callImg.height * ratio;
+                        const drawX = (targetWidth - drawWidth) / 2;
+                        const drawY = (targetHeight - drawHeight) / 2 - 50 * (targetHeight / 1000);
+
+                        hrCtx.save();
+                        hrCtx.drawImage(callImg, drawX, drawY, drawWidth, drawHeight);
+                        hrCtx.globalCompositeOperation = 'source-in';
+                        hrCtx.fillStyle = userChoices.calligraphyColor;
+                        hrCtx.fillRect(drawX, drawY, drawWidth, drawHeight);
+                        hrCtx.restore();
+                    }
+
+                    // رسم النصوص
+                    drawTextsOnCanvas(hrCtx, targetWidth, targetHeight);
+
+                    // تحويل إلى blob وتحفيز التحميل
+                    highResCanvas.toBlob(blob => {
+                        const link = document.createElement('a');
+                        link.download = `بطاقة_${userChoices.occasionName || 'تهنئة'}_${userChoices.format}.png`;
+                        link.href = URL.createObjectURL(blob);
+                        link.click();
+                        URL.revokeObjectURL(link.href);
+                    }, 'image/png');
                 } catch (e) {
-                    alert('حدث خطأ أثناء تحميل البطاقة. يرجى المحاولة مرة أخرى.');
+                    alert('حدث خطأ أثناء تحميل البطاقة بدقة عالية');
                     console.error(e);
                 }
             }
 
-            // دالة تحميل البطاقة - معرفة على window
+            function loadImage(src) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => resolve(img);
+                    img.onerror = reject;
+                    img.src = src;
+                });
+            }
+
+            function drawImageOnCanvas(ctx, src, x, y, w, h) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => {
+                        ctx.drawImage(img, x, y, w, h);
+                        resolve();
+                    };
+                    img.onerror = reject;
+                    img.src = src;
+                });
+            }
+
+            function drawTextsOnCanvas(ctx, width, height) {
+                const diagonal = Math.hypot(width, height);
+                const baseFontSize = Math.round(diagonal * 0.04 * (userChoices.fontSizePercent / 100));
+                const nameFontSize = Math.round(baseFontSize * 0.8);
+
+                // إعداد الظل
+                ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+                switch (userChoices.shadowEffect) {
+                    case 'light':
+                        ctx.shadowBlur = 5;
+                        ctx.shadowOffsetX = 2;
+                        ctx.shadowOffsetY = 2;
+                        ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                        break;
+                    case 'heavy':
+                        ctx.shadowBlur = 10;
+                        ctx.shadowOffsetX = 4;
+                        ctx.shadowOffsetY = 4;
+                        ctx.shadowColor = 'rgba(0,0,0,0.7)';
+                        break;
+                    case 'colored':
+                        ctx.shadowBlur = 8;
+                        ctx.shadowOffsetX = 3;
+                        ctx.shadowOffsetY = 3;
+                        ctx.shadowColor = '#f59e0b';
+                        break;
+                }
+
+                ctx.font = `600 ${baseFontSize}px "${userChoices.fontFamily}", "Cairo", sans-serif`;
+                ctx.fillStyle = userChoices.fontColor;
+                ctx.textAlign = 'center';
+                
+                const margin = 50;
+                const minX = margin;
+                const maxX = width - margin;
+                const textX = minX + (userChoices.textPosition / 100) * (maxX - minX);
+
+                if (userChoices.message) {
+                    const lines = userChoices.message.split('\n');
+                    const lineHeight = baseFontSize * 1.4;
+                    lines.forEach((line, i) => {
+                        ctx.fillText(line, textX, height * 0.3 + i * lineHeight);
+                    });
+                }
+
+                if (userChoices.name) {
+                    ctx.font = `600 ${nameFontSize}px "${userChoices.fontFamily}", "Cairo", sans-serif`;
+                    ctx.fillText(userChoices.name, textX, height - 100);
+                }
+            }
+
+            // دالة التحميل الأصلية (تستدعي العالية الدقة)
             window.downloadCard = function() {
                 if (!userChoices.occasionKey) {
                     alert('الرجاء اختيار مناسبة أولاً');
@@ -868,26 +852,109 @@
                 if (isDrawing) {
                     pendingDownload = true;
                 } else {
-                    performDownload();
+                    performHighResDownload();
                 }
             };
 
-            function setFormat(format) {
-                userChoices.format = format;
-                document.getElementById('formatSquare').classList.toggle('active', format === 'square');
-                document.getElementById('formatPortrait').classList.toggle('active', format === 'portrait');
-                drawCanvas();
-            }
+            // دالة المشاركة
+            window.shareCard = async function() {
+                if (!userChoices.occasionKey) {
+                    alert('الرجاء اختيار مناسبة أولاً');
+                    return;
+                }
+                if (isDrawing) {
+                    pendingShare = true;
+                    return;
+                }
+                try {
+                    const highResCanvas = document.createElement('canvas');
+                    let w, h;
+                    if (userChoices.format === 'square') { w = 2400; h = 2400; } else { w = 1800; h = 2700; }
+                    highResCanvas.width = w; highResCanvas.height = h;
+                    const hrCtx = highResCanvas.getContext('2d');
+                    
+                    if (userChoices.backgroundSrc) await drawImageOnCanvas(hrCtx, userChoices.backgroundSrc, 0, 0, w, h);
+                    else { hrCtx.fillStyle = '#ffd7be'; hrCtx.fillRect(0,0,w,h); }
+                    
+                    if (userChoices.calligraphySrc) {
+                        const callImg = await loadImage(userChoices.calligraphySrc);
+                        const diagonal = Math.hypot(w, h);
+                        const baseSize = diagonal * 0.35;
+                        const ratio = Math.min(baseSize / callImg.width, baseSize / callImg.height, 1);
+                        const dw = callImg.width * ratio, dh = callImg.height * ratio;
+                        const dx = (w - dw) / 2, dy = (h - dh) / 2 - 50 * (h / 1000);
+                        hrCtx.save();
+                        hrCtx.drawImage(callImg, dx, dy, dw, dh);
+                        hrCtx.globalCompositeOperation = 'source-in';
+                        hrCtx.fillStyle = userChoices.calligraphyColor;
+                        hrCtx.fillRect(dx, dy, dw, dh);
+                        hrCtx.restore();
+                    }
+                    
+                    drawTextsOnCanvas(hrCtx, w, h);
 
-            // إدارة الخطوات
+                    highResCanvas.toBlob(async (blob) => {
+                        const file = new File([blob], 'card.png', { type: 'image/png' });
+                        if (navigator.share) {
+                            try {
+                                await navigator.share({
+                                    files: [file],
+                                    title: 'بطاقة تهنئة',
+                                    text: 'بطاقة تهنئة من تصميمي'
+                                });
+                            } catch (err) {
+                                // المستخدم ألغى أو حدث خطأ
+                                console.log('شارك ألغيت');
+                            }
+                        } else {
+                            // Web Share غير مدعوم - نسخ الرابط
+                            const url = URL.createObjectURL(blob);
+                            prompt('انسخ الرابط لمشاركة الصورة:', url);
+                        }
+                    }, 'image/png');
+                } catch (e) {
+                    alert('فشل في مشاركة البطاقة');
+                    console.error(e);
+                }
+            };
+
+            // إعادة التعيين
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                userChoices = {
+                    occasionKey: null,
+                    occasionName: null,
+                    message: '',
+                    backgroundSrc: null,
+                    calligraphySrc: null,
+                    name: '',
+                    format: 'square',
+                    fontFamily: 'Cairo',
+                    fontColor: '#ffffff',
+                    fontSizePercent: 100,
+                    textPosition: 50,
+                    shadowEffect: 'light',
+                    calligraphyColor: '#ffffff'
+                };
+                localStorage.removeItem('cardDesignerState');
+                applyChoicesToUI();
+                drawEmptyCanvas();
+                // إعادة تحميل القوائم
+                if (userChoices.occasionKey) {
+                    loadMessages(userChoices.occasionKey);
+                    loadBackgrounds(userChoices.occasionKey);
+                    loadCalligraphy(userChoices.occasionKey);
+                }
+            });
+
+            // أحداث الخطوات
             let currentStep = 1;
             const stepContents = document.querySelectorAll('.step-content');
-            const stepIndicators = document.querySelectorAll('.step-item');
+            const stepIndicators = document.querySelectorAll('.step-item[data-step]');
             const nextButtons = document.querySelectorAll('.next-btn');
             const prevButtons = document.querySelectorAll('.prev-btn');
 
             function goToStep(step) {
-                stepContents.forEach(content => content.classList.add('hidden'));
+                stepContents.forEach(c => c.classList.add('hidden'));
                 document.getElementById(`step-${step}`).classList.remove('hidden');
                 stepIndicators.forEach((ind, idx) => {
                     if (idx+1 === step) ind.classList.add('active');
@@ -913,7 +980,7 @@
             nextButtons.forEach(btn => btn.addEventListener('click', nextStep));
             prevButtons.forEach(btn => btn.addEventListener('click', prevStep));
 
-            // أحداث المناسبة
+            // اختيار المناسبة
             const occasionOptions = document.querySelectorAll('[data-occasion]');
             occasionOptions.forEach(opt => {
                 opt.addEventListener('click', function() {
@@ -924,171 +991,217 @@
                     const occasionName = this.dataset.occasion;
                     userChoices.occasionKey = occasionKey;
                     userChoices.occasionName = occasionName;
+                    selectedOccasionDisplay.textContent = occasionName;
 
-                    // تحميل قوائم الخيارات للمناسبة المختارة
                     loadMessages(occasionKey);
                     loadBackgrounds(occasionKey);
                     loadCalligraphy(occasionKey);
 
                     document.querySelector('#step-1 .next-btn').disabled = false;
+                    drawCanvas();
+                    saveToStorage();
                 });
             });
 
             // تحميل الرسائل
-            function loadMessages(occasionKey) {
+            function loadMessages(key) {
                 const container = document.getElementById('messages-container');
                 container.innerHTML = '';
-                const msgs = messagesData[occasionKey] || [];
-                msgs.forEach(msg => {
+                (messagesData[key] || []).forEach(msg => {
                     const div = document.createElement('div');
                     div.className = 'option-card p-3 cursor-pointer text-center font-semibold text-sm sm:text-base';
                     div.textContent = msg;
+                    div.setAttribute('role', 'button'); div.setAttribute('tabindex', '0');
                     div.addEventListener('click', function() {
                         document.querySelectorAll('#messages-container .option-card').forEach(el => el.classList.remove('selected'));
                         this.classList.add('selected');
                         userChoices.message = msg;
                         document.getElementById('customMessage').value = msg;
                         drawCanvas();
+                        saveToStorage();
                     });
                     container.appendChild(div);
                 });
             }
 
-            // تحميل الخلفيات من المجلد المحلي
-            function loadBackgrounds(occasionKey) {
+            // تحميل الخلفيات مع lazy loading
+            function loadBackgrounds(key) {
                 const container = document.getElementById('backgrounds-container');
                 container.innerHTML = '';
                 backgroundErrorDiv.classList.add('hidden');
+                document.getElementById('backgroundsLoader').classList.remove('hidden');
                 
-                const files = backgroundFileLists[occasionKey] || [];
-                if (files.length === 0) {
-                    container.innerHTML = '<p class="text-gray-500 text-sm">لا توجد خلفيات متاحة لهذه المناسبة حالياً</p>';
-                    return;
-                }
-                
-                files.forEach(filename => {
-                    // بناء المسار: images/[occasionKey]/backgrounds/[filename]
-                    const src = `images/${occasionKey}/backgrounds/${filename}`;
-                    console.log('تحميل الخلفية:', src); // للتتبع
+                setTimeout(() => { // محاكاة تحميل غير متزامن
+                    const files = backgroundFileLists[key] || [];
+                    if (files.length === 0) {
+                        container.innerHTML = '<p class="text-gray-500 text-sm">لا توجد خلفيات متاحة لهذه المناسبة حالياً</p>';
+                        document.getElementById('backgroundsLoader').classList.add('hidden');
+                        return;
+                    }
                     
-                    const div = document.createElement('div');
-                    div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-28 flex items-center justify-center p-1';
-                    
-                    const img = document.createElement('img');
-                    img.src = src;
-                    img.className = 'thumbnail-img';
-                    img.alt = 'خلفية';
-                    img.loading = 'lazy';
-                    img.onerror = () => {
-                        console.warn(`لا يمكن تحميل الخلفية: ${src}`);
-                        div.style.display = 'none'; // إخفاء العنصر الفاشل
-                        backgroundErrorDiv.classList.remove('hidden');
-                        backgroundErrorDiv.textContent = `بعض الخلفيات لم يتم تحميلها. تأكد من وجود الملفات في المسار: images/${occasionKey}/backgrounds/`;
-                    };
-                    img.onload = () => {
-                        console.log(`تم تحميل الخلفية بنجاح: ${src}`);
-                    };
-                    
-                    div.appendChild(img);
-                    div.dataset.src = src;
-                    
-                    div.addEventListener('click', function() {
-                        document.querySelectorAll('#backgrounds-container .option-card').forEach(el => el.classList.remove('selected'));
-                        this.classList.add('selected');
-                        userChoices.backgroundSrc = this.dataset.src;
-                        drawCanvas();
+                    files.forEach(filename => {
+                        const src = `images/${key}/backgrounds/${filename}`;
+                        const div = document.createElement('div');
+                        div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-28 flex items-center justify-center p-1';
+                        
+                        const img = document.createElement('img');
+                        img.loading = 'lazy';
+                        img.src = src;
+                        img.className = 'thumbnail-img';
+                        img.alt = 'خلفية';
+                        img.onerror = () => {
+                            console.warn(`لا يمكن تحميل الخلفية: ${src}`);
+                            div.style.display = 'none';
+                            backgroundErrorDiv.classList.remove('hidden');
+                            backgroundErrorDiv.textContent = `بعض الخلفيات لم يتم تحميلها. تأكد من وجود الملفات في المسار: images/${key}/backgrounds/`;
+                        };
+                        
+                        div.appendChild(img);
+                        div.dataset.src = src;
+                        
+                        div.addEventListener('click', function() {
+                            document.querySelectorAll('#backgrounds-container .option-card').forEach(el => el.classList.remove('selected'));
+                            this.classList.add('selected');
+                            userChoices.backgroundSrc = this.dataset.src;
+                            drawCanvas();
+                            saveToStorage();
+                        });
+                        
+                        container.appendChild(div);
                     });
-                    
-                    container.appendChild(div);
-                });
+                    document.getElementById('backgroundsLoader').classList.add('hidden');
+                }, 100);
             }
 
-            // تحميل المخطوطات من المجلد المحلي
-            function loadCalligraphy(occasionKey) {
+            // تحميل المخطوطات
+            function loadCalligraphy(key) {
                 const container = document.getElementById('calligraphy-container');
                 container.innerHTML = '';
                 calligraphyErrorDiv.classList.add('hidden');
+                document.getElementById('calligraphyLoader').classList.remove('hidden');
                 
-                const files = calligraphyFileLists[occasionKey] || [];
-                if (files.length === 0) {
-                    container.innerHTML = '<p class="text-gray-500 text-sm">لا توجد مخطوطات متاحة لهذه المناسبة حالياً</p>';
-                    return;
-                }
-                
-                files.forEach(filename => {
-                    // بناء المسار: images/[occasionKey]/calligraphy/[filename]
-                    const src = `images/${occasionKey}/calligraphy/${filename}`;
-                    console.log('تحميل المخطوطة:', src); // للتتبع
+                setTimeout(() => {
+                    const files = calligraphyFileLists[key] || [];
+                    if (files.length === 0) {
+                        container.innerHTML = '<p class="text-gray-500 text-sm">لا توجد مخطوطات متاحة لهذه المناسبة حالياً</p>';
+                        document.getElementById('calligraphyLoader').classList.add('hidden');
+                        return;
+                    }
                     
-                    const div = document.createElement('div');
-                    div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-32 bg-white border border-gray-300 flex items-center justify-center p-1';
-                    
-                    const img = document.createElement('img');
-                    img.src = src;
-                    img.className = 'invert-thumbnail';
-                    img.alt = 'مخطوطة';
-                    img.loading = 'lazy';
-                    img.onerror = () => {
-                        console.warn(`لا يمكن تحميل المخطوطة: ${src}`);
-                        div.style.display = 'none'; // إخفاء العنصر الفاشل
-                        calligraphyErrorDiv.classList.remove('hidden');
-                        calligraphyErrorDiv.textContent = `بعض المخطوطات لم يتم تحميلها. تأكد من وجود الملفات في المسار: images/${occasionKey}/calligraphy/`;
-                    };
-                    img.onload = () => {
-                        console.log(`تم تحميل المخطوطة بنجاح: ${src}`);
-                    };
-                    
-                    div.appendChild(img);
-                    div.dataset.src = src;
-                    
-                    div.addEventListener('click', function() {
-                        document.querySelectorAll('#calligraphy-container .option-card').forEach(el => el.classList.remove('selected'));
-                        this.classList.add('selected');
-                        userChoices.calligraphySrc = this.dataset.src;
-                        drawCanvas();
+                    files.forEach(filename => {
+                        const src = `images/${key}/calligraphy/${filename}`;
+                        const div = document.createElement('div');
+                        div.className = 'option-card overflow-hidden cursor-pointer h-24 sm:h-32 bg-white border border-gray-300 flex items-center justify-center p-1 calligraphy-thumb';
+                        
+                        const img = document.createElement('img');
+                        img.loading = 'lazy';
+                        img.src = src;
+                        img.className = 'w-full h-full object-contain';
+                        img.alt = 'مخطوطة';
+                        img.onerror = () => {
+                            console.warn(`لا يمكن تحميل المخطوطة: ${src}`);
+                            div.style.display = 'none';
+                            calligraphyErrorDiv.classList.remove('hidden');
+                            calligraphyErrorDiv.textContent = `بعض المخطوطات لم يتم تحميلها. تأكد من وجود الملفات في المسار: images/${key}/calligraphy/`;
+                        };
+                        
+                        div.appendChild(img);
+                        div.dataset.src = src;
+                        
+                        div.addEventListener('click', function() {
+                            document.querySelectorAll('#calligraphy-container .option-card').forEach(el => el.classList.remove('selected'));
+                            this.classList.add('selected');
+                            userChoices.calligraphySrc = this.dataset.src;
+                            drawCanvas();
+                            saveToStorage();
+                        });
+                        
+                        container.appendChild(div);
                     });
-                    
-                    container.appendChild(div);
-                });
+                    document.getElementById('calligraphyLoader').classList.add('hidden');
+                }, 100);
             }
 
-            // استماع للتغييرات في الخطوة 2
+            // أحداث تغيير الإعدادات
             document.getElementById('customMessage').addEventListener('input', function(e) {
                 userChoices.message = e.target.value;
                 document.querySelectorAll('#messages-container .option-card').forEach(el => el.classList.remove('selected'));
                 drawCanvas();
+                saveToStorage();
             });
 
             document.getElementById('fontFamilySelect').addEventListener('change', function(e) {
                 userChoices.fontFamily = e.target.value;
                 drawCanvas();
+                saveToStorage();
             });
 
             document.getElementById('fontColorInput').addEventListener('input', function(e) {
                 userChoices.fontColor = e.target.value;
                 drawCanvas();
+                saveToStorage();
             });
 
-            // استماع لتغيير لون المخطوطة
+            document.getElementById('fontSizeSlider').addEventListener('input', function(e) {
+                userChoices.fontSizePercent = parseInt(e.target.value);
+                document.getElementById('fontSizeValue').textContent = userChoices.fontSizePercent + '%';
+                drawCanvas();
+                saveToStorage();
+            });
+
+            document.getElementById('textPositionSlider').addEventListener('input', function(e) {
+                userChoices.textPosition = parseInt(e.target.value);
+                updateTextPositionLabel(userChoices.textPosition);
+                drawCanvas();
+                saveToStorage();
+            });
+
+            document.getElementById('shadowEffect').addEventListener('change', function(e) {
+                userChoices.shadowEffect = e.target.value;
+                drawCanvas();
+                saveToStorage();
+            });
+
             document.getElementById('calligraphyColorInput').addEventListener('input', function(e) {
                 userChoices.calligraphyColor = e.target.value;
                 drawCanvas();
+                saveToStorage();
             });
 
             document.getElementById('userName').addEventListener('input', function(e) {
                 userChoices.name = e.target.value;
                 drawCanvas();
+                saveToStorage();
             });
 
-            document.getElementById('formatSquare').addEventListener('click', () => setFormat('square'));
-            document.getElementById('formatPortrait').addEventListener('click', () => setFormat('portrait'));
+            document.getElementById('formatSquare').addEventListener('click', () => {
+                userChoices.format = 'square';
+                document.getElementById('formatSquare').classList.add('active');
+                document.getElementById('formatPortrait').classList.remove('active');
+                drawCanvas();
+                saveToStorage();
+            });
 
-            // تعيين القيم الافتراضية لعناصر التحكم
-            document.getElementById('fontFamilySelect').value = userChoices.fontFamily;
-            document.getElementById('fontColorInput').value = userChoices.fontColor;
-            document.getElementById('calligraphyColorInput').value = userChoices.calligraphyColor;
+            document.getElementById('formatPortrait').addEventListener('click', () => {
+                userChoices.format = 'portrait';
+                document.getElementById('formatPortrait').classList.add('active');
+                document.getElementById('formatSquare').classList.remove('active');
+                drawCanvas();
+                saveToStorage();
+            });
 
-            // لا يوجد اختيار افتراضي، المعاينة فارغة مع رسالة ترحيبية
+            // تحميل الحالة المحفوظة
+            loadFromStorage();
+
+            // إضافة دعم لوحة المفاتيح للخيارات
+            document.querySelectorAll('[role="button"], .option-card, .step-item').forEach(el => {
+                el.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        el.click();
+                    }
+                });
+            });
         })();
     </script>
 </body>
